@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:budgetdeliver/utils/global.color.dart';
+import '../models/user.dart';
+import '../service/user_api.dart';
+import '../utils/function.dart';
+
 
 class LoginView extends StatefulWidget {
   const LoginView({Key? key}) : super(key: key);
@@ -32,15 +36,14 @@ class _LoginViewState extends State<LoginView> {
                 const CircleAvatar(
                     radius: 100.0,
                     backgroundColor: Colors.grey,
-                    backgroundImage: AssetImage("images/logo.webp")
+                    backgroundImage: AssetImage("assets/images/logo.webp")
                 ),
                 const Text(
                     "Iniciar sesion",
                     style: TextStyle(
-                      //color:Colors.white,
                         fontSize:35,
-                        fontWeight: FontWeight.bold
-                      //fontFamily: 'NerkoOne'
+                        fontWeight: FontWeight.bold,
+                         fontFamily: 'NerkoOne'
                     )
                 ),
                 const SizedBox(
@@ -70,10 +73,22 @@ class _LoginViewState extends State<LoginView> {
                               backgroundColor: MaterialStateProperty.all<Color>(GlobalColors.buttonColor),
                               foregroundColor: MaterialStateProperty.all<Color>(GlobalColors.textColorButton),
                             ),
-                            onPressed: () {
+                            onPressed: () async {
                               if (_formKey.currentState!.validate()) {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(content: Text('Processing Data')),
+
+                                login(_user,_password).then((user) => {
+                                  print(user.token)
+                                });
+
+
+                                showDialog(context: context,
+                                    builder: (BuildContext context){
+                                      return const AlertDialog(
+                                          content:  Text('Informacion de api'),
+                                          actions: [],
+                                      );
+                                    }
+
                                 );
                               }
                             },
@@ -133,8 +148,8 @@ class _LoginViewState extends State<LoginView> {
               autofocus: true,
               obscureText: passwordVisibility,
               decoration: InputDecoration(
-                hintText: 'Contraseñaa',
-                labelText: 'Contraseñaa',
+                hintText: 'Contraseña',
+                labelText: 'Contraseña',
                 suffixIcon: IconButton(
                   icon: Icon(
                       passwordVisibility ? Icons.visibility : Icons.visibility_off

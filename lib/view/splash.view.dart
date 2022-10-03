@@ -19,11 +19,12 @@ class SplashView extends StatelessWidget {
       backgroundColor: GlobalColors.backgroudColor,
       body: const Center(
         child: Text(
-            'Budget',
-              style: TextStyle(
-              color:Colors.white,
-              fontSize:35,
-              fontWeight: FontWeight.bold
+                'Budget',
+                style: TextStyle(
+                color:Colors.white,
+                fontSize:35,
+                fontWeight: FontWeight.bold,
+                fontFamily: 'NerkoOne'
               )
         )
       ),
