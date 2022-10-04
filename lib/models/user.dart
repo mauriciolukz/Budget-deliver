@@ -6,6 +6,7 @@ class User{
   final String role;
   final String token;
 
+
   User({
     required this.id,
     required this.username,
@@ -20,7 +21,7 @@ class User{
       username: json['user']['username'] as String,
       email: json['user']['email'] as String,
       role: json['user']['role'] as String,
-      token: json['token'] as String,
+      token: json['token'] as String
     );
   }
 

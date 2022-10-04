@@ -1,8 +1,12 @@
+import 'dart:convert';
+import 'package:alert/alert.dart';
 import 'package:flutter/material.dart';
 import 'package:budgetdeliver/utils/global.color.dart';
+import 'package:http/src/response.dart';
 import '../models/user.dart';
+import '../models/error.dart';
 import '../service/user_api.dart';
-import '../utils/function.dart';
+import 'home.view.dart';
 
 
 class LoginView extends StatefulWidget {
@@ -35,8 +39,8 @@ class _LoginViewState extends State<LoginView> {
               children: [
                 const CircleAvatar(
                     radius: 100.0,
-                    backgroundColor: Colors.grey,
-                    backgroundImage: AssetImage("assets/images/logo.webp")
+                    backgroundColor: Colors.white,
+                    backgroundImage: AssetImage("assets/images/budget-logo.png")
                 ),
                 const Text(
                     "Iniciar sesion",
@@ -73,23 +77,13 @@ class _LoginViewState extends State<LoginView> {
                               backgroundColor: MaterialStateProperty.all<Color>(GlobalColors.buttonColor),
                               foregroundColor: MaterialStateProperty.all<Color>(GlobalColors.textColorButton),
                             ),
-                            onPressed: () async {
+                            onPressed: () {
                               if (_formKey.currentState!.validate()) {
 
-                                login(_user,_password).then((user) => {
-                                  print(user.token)
-                                });
+                                login(_user,_password)
+                                    .then((response) => successfulLogin(response))
+                                    .catchError((er) => handleError(er));
 
-
-                                showDialog(context: context,
-                                    builder: (BuildContext context){
-                                      return const AlertDialog(
-                                          content:  Text('Informacion de api'),
-                                          actions: [],
-                                      );
-                                    }
-
-                                );
                               }
                             },
                             child: const Text('Entrar',style: TextStyle(fontSize:14))
@@ -167,6 +161,26 @@ class _LoginViewState extends State<LoginView> {
           );
         }
     );
+  }
+
+  successfulLogin(Response response) {
+
+    if (response.statusCode == 201) {
+      var res = json.decode(response.body);
+      User user = User.fromJson(res);
+      Navigator.push(context,MaterialPageRoute(builder: (context) => const HomeView()));
+    }
+
+    if (response.statusCode == 404) {
+      var res = json.decode(response.body);
+      Error error = Error.fromJson(res);
+      Alert(message: error.message, shortDuration: true).show();
+    }
+
+  }
+
+  handleError(er) {
+    Alert(message: er, shortDuration: true).show();
   }
 
 }
