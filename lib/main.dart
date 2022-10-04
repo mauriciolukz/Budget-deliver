@@ -1,8 +1,11 @@
+import 'package:budgetdeliver/utils/dependency_injection.dart';
+import 'package:budgetdeliver/view/home.view.dart';
+import 'package:budgetdeliver/view/login.view.dart';
 import 'package:budgetdeliver/view/splash.view.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get_navigation/src/root/get_material_app.dart';
 
 void main() {
+  DependencyInjection.initialize();
   runApp(const App());
 }
 
@@ -12,8 +15,13 @@ class App extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return const GetMaterialApp(
-      home: SplashView(),
+    return MaterialApp(
+      title: 'Budget',
+      home:  SplashView(),
+      routes: {
+        LoginView.routeName: (context) => LoginView(),
+        HomeView.routeName: (context) => HomeView(),
+      },
     );
   }
 }

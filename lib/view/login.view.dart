@@ -2,16 +2,19 @@ import 'dart:convert';
 import 'package:alert/alert.dart';
 import 'package:flutter/material.dart';
 import 'package:budgetdeliver/utils/global.color.dart';
+import 'package:get_it/get_it.dart';
 import 'package:http/src/response.dart';
+import 'package:quickalert/models/quickalert_type.dart';
+import 'package:quickalert/widgets/quickalert_dialog.dart';
+import '../data/authentication_client.dart';
 import '../models/user.dart';
 import '../models/error.dart';
 import '../service/user_api.dart';
-import 'home.view.dart';
 
 
 class LoginView extends StatefulWidget {
   const LoginView({Key? key}) : super(key: key);
-
+  static const routeName = 'LoginView';
   @override
   State<LoginView> createState() => _LoginViewState();
 }
@@ -22,6 +25,7 @@ class _LoginViewState extends State<LoginView> {
   late String _password;
   late bool passwordVisibility = true;
   final _formKey = GlobalKey<FormState>();
+  final _authenticationClient = GetIt.instance<AuthenticationClient>();
 
   @override
   Widget build(BuildContext context) {
@@ -78,6 +82,7 @@ class _LoginViewState extends State<LoginView> {
                               foregroundColor: MaterialStateProperty.all<Color>(GlobalColors.textColorButton),
                             ),
                             onPressed: () {
+
                               if (_formKey.currentState!.validate()) {
 
                                 login(_user,_password)
@@ -85,6 +90,7 @@ class _LoginViewState extends State<LoginView> {
                                     .catchError((er) => handleError(er));
 
                               }
+
                             },
                             child: const Text('Entrar',style: TextStyle(fontSize:14))
                           )
@@ -163,18 +169,19 @@ class _LoginViewState extends State<LoginView> {
     );
   }
 
-  successfulLogin(Response response) {
+  successfulLogin(Response response) async {
 
     if (response.statusCode == 201) {
       var res = json.decode(response.body);
       User user = User.fromJson(res);
-      Navigator.push(context,MaterialPageRoute(builder: (context) => const HomeView()));
+      await _authenticationClient.saveSession(user);
+      Navigator.pushNamedAndRemoveUntil(context,'HomeView',(_) => false);
     }
 
-    if (response.statusCode == 404) {
+    if (response.statusCode == 404 || response.statusCode == 401) {
       var res = json.decode(response.body);
       Error error = Error.fromJson(res);
-      Alert(message: error.message, shortDuration: true).show();
+      QuickAlert.show(context: context,type: QuickAlertType.error,text: error.message);
     }
 
   }
