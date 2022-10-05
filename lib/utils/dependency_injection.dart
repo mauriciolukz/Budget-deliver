@@ -7,6 +7,8 @@ abstract class DependencyInjection{
   
   static void initialize(){
 
+
+
     final secureStorage = FlutterSecureStorage();
     final  authenticationClient = AuthenticationClient(secureStorage);
 

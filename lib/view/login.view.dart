@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:alert/alert.dart';
+import 'package:budgetdeliver/utils/global.constants.dart';
 import 'package:flutter/material.dart';
 import 'package:budgetdeliver/utils/global.color.dart';
 import 'package:get_it/get_it.dart';
@@ -10,6 +11,8 @@ import '../data/authentication_client.dart';
 import '../models/user.dart';
 import '../models/error.dart';
 import '../service/user_api.dart';
+import '../widgets/dialogs.dart';
+import '../widgets/input_text.dart';
 
 
 class LoginView extends StatefulWidget {
@@ -41,13 +44,16 @@ class _LoginViewState extends State<LoginView> {
             Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const CircleAvatar(
-                    radius: 100.0,
-                    backgroundColor: Colors.white,
-                    backgroundImage: AssetImage("assets/images/budget-logo.png")
+                CircleAvatar(
+                  backgroundColor: GlobalColors.backgroudColor,
+                  radius: 100.0,
+                  child: CircleAvatar(
+                    radius: 95.0,
+                    child: Image.asset('assets/images/budget-logo.png',fit: BoxFit.contain),
+                  ),
                 ),
                 const Text(
-                    "Iniciar sesion",
+                    GlobalConstants.iniciarSesion,
                     style: TextStyle(
                         fontSize:35,
                         fontWeight: FontWeight.bold,
@@ -66,11 +72,21 @@ class _LoginViewState extends State<LoginView> {
                     child:
                     Column(
                       children: [
-                        _userTextField(),
+                         InputText(
+                          keyboardType: TextInputType.emailAddress,
+                          label:GlobalConstants.usuario,
+                          onChanged: (text) => _user = text,
+                           validator: (value) => value.isEmpty || value == null ? 'Por favor ingresar usuario': null,
+                        ),
                         const Divider(
                           height: 18.0,
                         ),
-                        _passwordTextField(),
+                         InputText(
+                             validator: (value) => value.isEmpty || value == null ? 'Por favor ingresar contraseña': null,
+                             onChanged: (text) => _password = text,
+                            obscureText:true,
+                            label:GlobalConstants.contrasena
+                        ),
                         const Divider(
                           height: 15.0,
                         ),
@@ -81,18 +97,19 @@ class _LoginViewState extends State<LoginView> {
                               backgroundColor: MaterialStateProperty.all<Color>(GlobalColors.buttonColor),
                               foregroundColor: MaterialStateProperty.all<Color>(GlobalColors.textColorButton),
                             ),
-                            onPressed: () {
+                            onPressed: () async {
 
                               if (_formKey.currentState!.validate()) {
 
-                                login(_user,_password)
+                                ProgressDialog.show(context);
+                                await login(_user,_password)
                                     .then((response) => successfulLogin(response))
                                     .catchError((er) => handleError(er));
 
                               }
 
                             },
-                            child: const Text('Entrar',style: TextStyle(fontSize:14))
+                            child: const Text(GlobalConstants.entrar,style: TextStyle(fontSize:14))
                           )
                         )
                       ]
@@ -106,41 +123,13 @@ class _LoginViewState extends State<LoginView> {
 
   }
 
-  Widget _userTextField(){
-    return StreamBuilder(
-        builder:(BuildContext context,AsyncSnapshot snapshot){
-          return TextFormField(
-              validator: (value) {
-                if (value == null || value.isEmpty) {
-                  return 'Por favor ingresar usuario';
-                }
-                return null;
-              },
-              enableInteractiveSelection: false,
-              autofocus: true,
-              decoration: InputDecoration(
-                hintText: 'Usuario',
-                labelText: 'Usuario',
-                suffixIcon: const Icon(
-                    Icons.verified_user
-                ),
-                border: OutlineInputBorder(borderRadius: BorderRadius.circular(20.0)),
-              ),
-              onChanged: (v) => setState(() {
-                _user = v;
-              })
-          );
-        }
-    );
-  }
-
   Widget _passwordTextField(){
     return StreamBuilder(
         builder:(BuildContext context,AsyncSnapshot snapshot){
           return TextFormField(
             validator: (value) {
               if (value == null || value.isEmpty) {
-                return 'Por favor ingresar contraseña';
+                return GlobalConstants.ingresarContrasena;
               }
               return null;
             },
@@ -170,7 +159,8 @@ class _LoginViewState extends State<LoginView> {
   }
 
   successfulLogin(Response response) async {
-
+    print(response.statusCode);
+    ProgressDialog.dissmiss(context);
     if (response.statusCode == 201) {
       var res = json.decode(response.body);
       User user = User.fromJson(res);
@@ -187,7 +177,8 @@ class _LoginViewState extends State<LoginView> {
   }
 
   handleError(er) {
-    Alert(message: er, shortDuration: true).show();
+    ProgressDialog.dissmiss(context);
+    QuickAlert.show(context: context,type: QuickAlertType.error,text: er.toString());
   }
 
 }
