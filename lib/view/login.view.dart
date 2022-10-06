@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'package:alert/alert.dart';
 import 'package:budgetdeliver/utils/global.constants.dart';
 import 'package:flutter/material.dart';
 import 'package:budgetdeliver/utils/global.color.dart';
@@ -76,13 +75,13 @@ class _LoginViewState extends State<LoginView> {
                           keyboardType: TextInputType.emailAddress,
                           label:GlobalConstants.usuario,
                           onChanged: (text) => _user = text,
-                           validator: (value) => value.isEmpty || value == null ? 'Por favor ingresar usuario': null,
+                           validator: (value) => value.isEmpty || value == null ? GlobalConstants.ingresarUsuario: null,
                         ),
                         const Divider(
                           height: 18.0,
                         ),
                          InputText(
-                             validator: (value) => value.isEmpty || value == null ? 'Por favor ingresar contraseña': null,
+                             validator: (value) => value.isEmpty || value == null ? GlobalConstants.ingresarContrasena: null,
                              onChanged: (text) => _password = text,
                             obscureText:true,
                             label:GlobalConstants.contrasena
@@ -102,9 +101,8 @@ class _LoginViewState extends State<LoginView> {
                               if (_formKey.currentState!.validate()) {
 
                                 ProgressDialog.show(context);
-                                await login(_user,_password)
-                                    .then((response) => successfulLogin(response))
-                                    .catchError((er) => handleError(er));
+                                await login(_user,_password,context,true)
+                                    .then((response) => successfulLogin(response));
 
                               }
 
@@ -159,8 +157,8 @@ class _LoginViewState extends State<LoginView> {
   }
 
   successfulLogin(Response response) async {
-    print(response.statusCode);
-    ProgressDialog.dissmiss(context);
+
+    //ProgressDialog.dissmiss(context);
     if (response.statusCode == 201) {
       var res = json.decode(response.body);
       User user = User.fromJson(res);
@@ -168,17 +166,7 @@ class _LoginViewState extends State<LoginView> {
       Navigator.pushNamedAndRemoveUntil(context,'HomeView',(_) => false);
     }
 
-    if (response.statusCode == 404 || response.statusCode == 401) {
-      var res = json.decode(response.body);
-      Error error = Error.fromJson(res);
-      QuickAlert.show(context: context,type: QuickAlertType.error,text: error.message);
-    }
-
   }
 
-  handleError(er) {
-    ProgressDialog.dissmiss(context);
-    QuickAlert.show(context: context,type: QuickAlertType.error,text: er.toString());
-  }
 
 }

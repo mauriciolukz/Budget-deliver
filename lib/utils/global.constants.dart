@@ -14,4 +14,7 @@ class GlobalConstants{
   static const String homeView  = "HomeView";
   static const String loginVIew  = "LoginVIew";
 
+  /***************************Mensajes de ventanas ***********************/
+  static const String errorDesconocido  = "Error inesperado";
+
 }

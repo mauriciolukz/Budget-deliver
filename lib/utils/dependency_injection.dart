@@ -6,9 +6,7 @@ import 'package:get_it/get_it.dart';
 abstract class DependencyInjection{
   
   static void initialize(){
-
-
-
+    
     final secureStorage = FlutterSecureStorage();
     final  authenticationClient = AuthenticationClient(secureStorage);
 
