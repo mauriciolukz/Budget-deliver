@@ -1,6 +1,6 @@
 class GlobalConstants{
 
-  static const String url  = "https://powerful-caverns-97080.herokuapp.com";
+  static const String url  = "https://fast-reef-40785.herokuapp.com";
 
   /*********************** ETIQUETAS *************************************/
   static const String usuario  = "Usuario";

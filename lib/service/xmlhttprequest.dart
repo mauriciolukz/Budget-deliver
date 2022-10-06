@@ -17,7 +17,7 @@ class XmlHttpRequest{
     //"Authorization": "Bearer ${user.jwt}"
   };
 
-   Future<http.Response> post(String api, Map<String, String> map,BuildContext context, bool modal) async {
+   Future<http.Response> post(String api, Map<String, String> map,BuildContext context, bool loadDialog) async {
 
     String baseUrl = "$path$api";
 
@@ -25,21 +25,31 @@ class XmlHttpRequest{
       Uri.parse(baseUrl),
       headers: header,
       body: jsonEncode(map),
-    ).then((value) => verifResponse(value,context,modal));
+    ).then((value) => verifResponse(value,context,loadDialog));
 
     return response;
 
   }
 
-  Future<http.Response> verifResponse(http.Response response,BuildContext context, bool modal) async {
+  Future<http.Response> verifResponse(http.Response response,BuildContext context, bool loadDialog) async {
 
-     await ProgressDialog.dissmiss(context);
-
-    if (response.statusCode == 404 || response.statusCode == 401) {
-      var res = json.decode(response.body);
-      Error error = Error.fromJson(res);
-      QuickAlert.show(context: context,type: QuickAlertType.error,text: error.message);
+    if(loadDialog == true){
+      await ProgressDialog.dissmiss(context);
     }
+
+    try {
+
+      if (response.statusCode == 404 || response.statusCode == 401) {
+        var res = json.decode(response.body);
+        Error error = Error.fromJson(res);
+        QuickAlert.show(context: context,type: QuickAlertType.error,text: error.message);
+      }
+
+    } on Exception catch (er) {
+      QuickAlert.show(context: context,type: QuickAlertType.error,text: "throwing new error $er");
+    }catch (er) {
+      QuickAlert.show(context: context,type: QuickAlertType.error,text: "throwing new error $er");
+  }
 
     return response;
 

@@ -2,7 +2,7 @@
     package="com.budgetdeliver.budgetdeliver">
     <uses-permission android:name="android.permission.INTERNET"/>
    <application
-        android:label="budgetdeliver"
+        android:label="Budget Deliver"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity

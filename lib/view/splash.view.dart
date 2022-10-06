@@ -52,7 +52,7 @@ class _SplashViewState extends State<SplashView> {
   Future<void> _checkLogin() async {
 
     final token = await _authenticationClient.accessToken;
-
+    print("variable $token");
     if(token == null){
       Navigator.pushNamedAndRemoveUntil(context,LoginView.routeName,(_) => false);
       return;

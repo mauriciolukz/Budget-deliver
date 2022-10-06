@@ -24,10 +24,10 @@ class Session{
 
   Map<String,dynamic> toJson() {
     return {
-      "id": this.id,
-      "username": this.username,
-      "role": this.role,
-      "token": this.token
+      "id": id,
+      "username": username,
+      "role": role,
+      "token": token
     };
   }
 
