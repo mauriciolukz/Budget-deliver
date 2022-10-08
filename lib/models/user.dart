@@ -24,5 +24,11 @@ class User{
       token: json['token'] as String
     );
   }
+  /*
+  Map<String, dynamic> toJson() => {
+    "id": id,
+    "name": name,
+    "caption": caption,
+  };*/
 
 }
