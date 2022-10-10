@@ -5,7 +5,6 @@ import 'dart:convert';
 import 'package:budgetdeliver/utils/global.constants.dart';
 import 'package:quickalert/models/quickalert_type.dart';
 import 'package:quickalert/widgets/quickalert_dialog.dart';
-import 'package:budgetdeliver/widgets/dialogs.dart';
 import '../models/error.dart';
 
 class XmlHttpRequest{

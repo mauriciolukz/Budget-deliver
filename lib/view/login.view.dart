@@ -7,13 +7,16 @@ import 'package:http/src/response.dart';
 import '../data/authentication_client.dart';
 import '../models/user.dart';
 import '../service/user_api.dart';
+import '../utils/database_util.dart';
 import '../widgets/dialogs.dart';
 import '../widgets/input_text.dart';
 
 
 class LoginView extends StatefulWidget {
   const LoginView({Key? key}) : super(key: key);
+
   static const routeName = 'LoginView';
+
   @override
   State<LoginView> createState() => _LoginViewState();
 }
@@ -22,9 +25,9 @@ class _LoginViewState extends State<LoginView> {
 
   late String _user;
   late String _password;
-  late bool passwordVisibility = true;
   final _formKey = GlobalKey<FormState>();
   final _authenticationClient = GetIt.instance<AuthenticationClient>();
+  final _databaseUtil = GetIt.instance<DatabaseUtil>();
 
   @override
   Widget build(BuildContext context) {
@@ -49,7 +52,7 @@ class _LoginViewState extends State<LoginView> {
                   ),
                 ),
                 const Text(
-                    GlobalConstants.iniciarSesion,
+                    GlobalConstants.signIn,
                     style: TextStyle(
                         fontSize:35,
                         fontWeight: FontWeight.bold,
@@ -70,18 +73,18 @@ class _LoginViewState extends State<LoginView> {
                       children: [
                          InputText(
                           keyboardType: TextInputType.emailAddress,
-                          label:GlobalConstants.usuario,
+                          label:GlobalConstants.user,
                           onChanged: (text) => _user = text,
-                           validator: (value) => value.isEmpty || value == null ? GlobalConstants.ingresarUsuario: null,
+                           validator: (value) => value.isEmpty || value == null ? GlobalConstants.enterUser: null,
                         ),
                         const Divider(
                           height: 18.0,
                         ),
                          InputText(
-                             validator: (value) => value.isEmpty || value == null ? GlobalConstants.ingresarContrasena: null,
+                             validator: (value) => value.isEmpty || value == null ? GlobalConstants.enterPassword: null,
                              onChanged: (text) => _password = text,
                             obscureText:true,
-                            label:GlobalConstants.contrasena
+                            label:GlobalConstants.password
                         ),
                         const Divider(
                           height: 15.0,
@@ -118,47 +121,15 @@ class _LoginViewState extends State<LoginView> {
 
   }
 
-  Widget _passwordTextField(){
-    return StreamBuilder(
-        builder:(BuildContext context,AsyncSnapshot snapshot){
-          return TextFormField(
-            validator: (value) {
-              if (value == null || value.isEmpty) {
-                return GlobalConstants.ingresarContrasena;
-              }
-              return null;
-            },
-              enableInteractiveSelection: false,
-              autofocus: true,
-              obscureText: passwordVisibility,
-              decoration: InputDecoration(
-                hintText: 'Contraseña',
-                labelText: 'Contraseña',
-                suffixIcon: IconButton(
-                  icon: Icon(
-                      passwordVisibility ? Icons.visibility : Icons.visibility_off
-                  ), onPressed: () {
-                  setState(() {
-                    passwordVisibility = !passwordVisibility;
-                  });
-                },
-                ),
-                border: OutlineInputBorder(borderRadius: BorderRadius.circular(20.0)),
-              ),
-              onChanged: (v) => setState(() {
-                _password = v;
-              })
-          );
-        }
-    );
-  }
-
   successfulLogin(Response response) async {
 
-    //ProgressDialog.dissmiss(context);
     if (response.statusCode == 201) {
       var res = json.decode(response.body);
-      User user = User.fromJson(res);
+      var appWindows = res['role']['appWindows'];
+
+      U_User user = U_User.fromJson(res);
+
+      await _databaseUtil.addMenu(appWindows);
       await _authenticationClient.saveSession(user);
       Navigator.pushNamedAndRemoveUntil(context,'HomeView',(_) => false);
     }

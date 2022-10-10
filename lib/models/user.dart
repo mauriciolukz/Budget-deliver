@@ -1,4 +1,4 @@
-class User{
+class U_User{
 
   final int id;
   final String username;
@@ -7,7 +7,7 @@ class User{
   final String token;
 
 
-  User({
+  U_User({
     required this.id,
     required this.username,
     required this.email,
@@ -15,8 +15,8 @@ class User{
     required this.token
   });
 
-  factory User.fromJson(dynamic json) {
-    return User(
+  factory U_User.fromJson(dynamic json) {
+    return U_User(
       id: json['user']['id'] as int,
       username: json['user']['username'] as String,
       email: json['user']['email'] as String,

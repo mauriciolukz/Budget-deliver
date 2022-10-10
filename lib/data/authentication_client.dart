@@ -26,7 +26,7 @@ class AuthenticationClient{
     return "";
   }
 
-  Future<void> saveSession(User user) async {
+  Future<void> saveSession(U_User user) async {
     final Session session = Session(
         id: user.id,
         username: user.username,

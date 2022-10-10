@@ -3,18 +3,22 @@ class GlobalConstants{
   static const String url  = "https://fast-reef-40785.herokuapp.com";
 
   /*********************** ETIQUETAS *************************************/
-  static const String usuario  = "Usuario";
-  static const String iniciarSesion  = "Iniciar sesion";
-  static const String contrasena  = "Contraseña";
+  static const String user  = "Usuario";
+  static const String signIn  = "Iniciar sesion";
+  static const String password  = "Contraseña";
   static const String entrar  = "Entrar";
-  static const String ingresarContrasena  = "Por favor ingresar contraseña";
-  static const String ingresarUsuario  = "Por favor ingresar usuario";
+  static const String enterPassword  = "Por favor ingresar contraseña";
+  static const String enterUser  = "Por favor ingresar usuario";
+  static const String tittleHome  = "Budget Vehiculos";
+  static const String refresh  = "Actualizar";
+  static const String exit  = "Salir";
+  static const String findMVA  = "Buscar MVA";
 
  /*********************** PAGINAS *************************************/
   static const String homeView  = "HomeView";
   static const String loginVIew  = "LoginVIew";
 
-  /***************************Mensajes de ventanas ***********************/
-  static const String errorDesconocido  = "Error inesperado";
+  /*************************** Mensajes de ventanas ***********************/
+  static const String unknownError  = "Error inesperado";
 
 }

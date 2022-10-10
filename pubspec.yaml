@@ -43,10 +43,17 @@ dependencies:
   quickalert: ^1.0.0
   flutter_secure_storage: ^6.0.0
   get_it: ^7.2.0
+  realm: ^0.4.0+beta
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
+  flutter_launcher_icons:
+
+flutter_icons:
+  android: "launcher_icon"
+  image_path: "assets/icon/budget-logo.png"
+  adaptive_icon_background: "assets/icon/budget-logo.png"
 
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is
