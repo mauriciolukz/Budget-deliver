@@ -26,6 +26,13 @@ class DatabaseUtil{
     }
   }
 
+  String getNameMenuItemByIndex(int index) {
+    var menu = _realm.all<Menu>();
+    return menu[index].name;
+  }
+
+
+
 
 
 }

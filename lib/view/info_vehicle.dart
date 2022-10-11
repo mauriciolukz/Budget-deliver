@@ -1,24 +1,21 @@
 import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
+
+import '../utils/database_util.dart';
 
 class InfoVehicle extends StatefulWidget {
-  final int index;
-  const InfoVehicle({Key? key,required this.index}) : super(key: key);
+  final String moduleName;
+  const InfoVehicle({Key? key, required String this.moduleName}) : super(key: key);
 
   @override
-  State<InfoVehicle> createState() => _InfoVehicleState(index);
+  State<InfoVehicle> createState() => _InfoVehicleState();
 }
 
 class _InfoVehicleState extends State<InfoVehicle> {
-  final int index;
-  _InfoVehicleState(int this.index);
-
 
   @override
   Widget build(BuildContext context) {
-    print(index);
-    setState((){
-      index;
-    });
-    return Container(child: Text("Pagina $index"),);
+    return Container(child: Text("Pagina ${widget.moduleName}"),);
   }
+
 }
