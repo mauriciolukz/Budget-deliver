@@ -123,16 +123,23 @@ class _LoginViewState extends State<LoginView> {
 
   successfulLogin(Response response) async {
 
-    if (response.statusCode == 201) {
+    if (response.statusCode == 200) {
       var res = json.decode(response.body);
       var appWindows = res['role']['appWindows'];
 
       U_User user = U_User.fromJson(res);
 
-      await _databaseUtil.addMenu(appWindows);
       await _authenticationClient.saveSession(user);
+      await _databaseUtil.addMenu(appWindows);
+      await loadDataApi();
       Navigator.pushNamedAndRemoveUntil(context,'HomeView',(_) => false);
     }
+
+  }
+
+  Future<void> loadDataApi() async {
+
+    await _databaseUtil.PullData(context);
 
   }
 

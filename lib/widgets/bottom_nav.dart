@@ -42,6 +42,7 @@ class _BNavigatorState extends State<BNavigator> {
       },
       type:BottomNavigationBarType.fixed,
       selectedItemColor: Colors.blue,
+      selectedFontSize: 15,
       unselectedItemColor: Colors.white,
       backgroundColor: GlobalColors.backgroudColor,
       iconSize: 25.0,

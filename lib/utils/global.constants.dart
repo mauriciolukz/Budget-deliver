@@ -1,8 +1,10 @@
 class GlobalConstants{
 
-  static const String url  = "https://fast-reef-40785.herokuapp.com";
+  //static const String url  = "https://fast-reef-40785.herokuapp.com";
+  static const String url  = "http://192.168.1.13:3000/api";
 
   /*********************** ETIQUETAS *************************************/
+  static const String companyName  = "Budget";
   static const String user  = "Usuario";
   static const String signIn  = "Iniciar sesion";
   static const String password  = "Contraseña";

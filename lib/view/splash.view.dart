@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:budgetdeliver/data/authentication_client.dart';
 import 'package:budgetdeliver/utils/global.color.dart';
+import 'package:budgetdeliver/utils/global.constants.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'home.view.dart';
@@ -37,7 +38,7 @@ class _SplashViewState extends State<SplashView> {
       backgroundColor: GlobalColors.backgroudColor,
       body: const Center(
           child: Text(
-              'Budget',
+              GlobalConstants.companyName,
               style: TextStyle(
                   color:Colors.white,
                   fontSize:35,

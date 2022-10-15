@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:budgetdeliver/app.dart';
 import 'package:budgetdeliver/widgets/Routes.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
@@ -19,14 +20,16 @@ class HomeView extends StatefulWidget {
 }
 
 class _HomeViewState extends State<HomeView> {
+
   int index = 0;
   String moduleName = "";
   BNavigator ?bNavigator;
   final _authenticationClient = GetIt.instance<AuthenticationClient>();
   final _databaseUtil = GetIt.instance<DatabaseUtil>();
   String username = "";
-  late TextEditingController controller;
-  String mva = '';
+  late TextEditingController mvaController;
+  String MVA = '';
+  late Vehicle vehicle = new Vehicle(0, "", "", "", "", "", "", 0, "", "", "", "", "", "", false);
 
   @override
   void initState() {
@@ -41,7 +44,7 @@ class _HomeViewState extends State<HomeView> {
 
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      controller = TextEditingController();
+      mvaController = TextEditingController();
       loadInfoUser();
     });
 
@@ -49,7 +52,7 @@ class _HomeViewState extends State<HomeView> {
 
   @override
   void dispose() {
-    controller.dispose();
+    mvaController.dispose();
     // TODO: implement dispose
     super.dispose();
   }
@@ -57,23 +60,14 @@ class _HomeViewState extends State<HomeView> {
   @override
   Widget build(BuildContext context) {
 
-    moduleName = _databaseUtil.getNameMenuItemByIndex(index);
+    moduleName = MVA == '' ? '' : _databaseUtil.getNameMenuItemByIndex(index);
 
     return  Scaffold(
       appBar: _AppBar(),
       backgroundColor: Colors.white,
-      body: Routes(index: index, moduleName:moduleName),
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: () async {
-            final mva = await openDialog();
-            if (mva == null || (mva.isEmpty)) return;
-            setState(() => this.mva = mva);
-        },
-        label:  Text(GlobalConstants.findMVA),
-        icon: const Icon(Icons.add),
-        backgroundColor: GlobalColors.backgroudColor,
-      ),
-      bottomNavigationBar: bNavigator/*const BNavigator()*/,
+      body: Routes(index: index, moduleName:moduleName, vehicle:this.vehicle),
+      floatingActionButton: _floatingActionButton(),
+      bottomNavigationBar: _bottomNavigationBar(),
     );
 
   }
@@ -90,15 +84,17 @@ class _HomeViewState extends State<HomeView> {
       actions: <Widget>[
         TextButton.icon(
           style: style,
-          label: const Text(GlobalConstants.refresh),
+          label: const Text(''),
           onPressed: () async {
-
+            setState(() {
+              index = 6;
+            });
           },
           icon: const Icon(Icons.refresh),
         ),
         TextButton.icon(
           style: style,
-          label: Text('${GlobalConstants.exit} $username'),
+          label: Text('$username'),
           onPressed: () async {
             await _authenticationClient.signOut();
             await _databaseUtil.cleanDatase();
@@ -123,15 +119,14 @@ class _HomeViewState extends State<HomeView> {
         Expanded(
             child: Text(
                 style: TextStyle(
-                    //backgroundColor: Colors.blue,
                     fontSize:35,
-                    fontWeight: FontWeight.bold,
-                    fontFamily: 'NerkoOne'
+                    fontWeight: FontWeight.bold
                 ),
                 "Codigo MVA"
             )
         ),
         content:TextFormField(
+            controller: mvaController,
             enableInteractiveSelection: false,
             autofocus: true,
             decoration: InputDecoration(
@@ -151,24 +146,65 @@ class _HomeViewState extends State<HomeView> {
         ),
         actions: [
           TextButton(
-              style: TextButton.styleFrom(
-                textStyle: const TextStyle(fontSize: 20),
-                backgroundColor: Colors.orange,
-                foregroundColor: Colors.white
-              ),
-              onPressed: (){
-            Navigator.of(context).pop(controller.text);
-            controller.clear();
-          }, child: Text('Buscar')),
+            style: TextButton.styleFrom(
+              textStyle: const TextStyle(fontSize: 20),
+              backgroundColor: Colors.orange,
+              foregroundColor: Colors.white
+            ),
+            onPressed: (){
+              Navigator.of(context).pop(mvaController.text);
+              mvaController.clear();
+            },
+            child: Text('Buscar')
+          ),
           TextButton(
               style:  TextButton.styleFrom(
                   textStyle: const TextStyle(fontSize: 20),
                   backgroundColor: Colors.orange,
                   foregroundColor: Colors.white
               ),
-              onPressed: (){}, child: Icon(Icons.camera))
+              onPressed: (){},
+              child: Icon(Icons.camera_alt_outlined)
+          )
         ],
       ),
   );
+
+  @override
+  // TODO: implement widget
+  HomeView get widget => super.widget;
+
+  _floatingActionButton() {
+    String textFloating = MVA == '' ? GlobalConstants.findMVA : "Limpiar VMA";
+    IconData iconFloating = MVA == '' ? Icons.search : Icons.remove;
+
+      return FloatingActionButton.extended(
+        onPressed: () async {
+          if( MVA == ''){
+            final mva = await openDialog();
+            if (mva == null || (mva.isEmpty)) return;
+            setState((){
+              this.MVA = mva;
+              this.vehicle = _databaseUtil.findVehicleByMVA(this.MVA);
+              print(this.vehicle.mva);
+            });
+          }else{
+            setState((){
+              this.MVA = '';
+              vehicle = new Vehicle(0, "", "", "", "", "", "", 0, "", "", "", "", "", "", false);
+            });
+          }
+        },
+        label: Text(textFloating),
+        icon: Icon(iconFloating),
+        backgroundColor: GlobalColors.backgroudColor,
+        splashColor: Colors.blue,
+      );
+
+  }
+
+  _bottomNavigationBar() {
+    return vehicle.mva != '' ? bNavigator : null;
+  }
 
 }
