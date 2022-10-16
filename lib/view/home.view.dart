@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:barcode_scan2/platform_wrapper.dart';
 import 'package:budgetdeliver/app.dart';
 import 'package:budgetdeliver/widgets/Routes.dart';
 import 'package:flutter/material.dart';
@@ -29,18 +30,18 @@ class _HomeViewState extends State<HomeView> {
   String username = "";
   late TextEditingController mvaController;
   String MVA = '';
-  late Vehicle vehicle = new Vehicle(0, "", "", "", "", "", "", 0, "", "", "", "", "", "", false);
+  late Vehicle vehicle = Vehicle(0, "", "", "", "", "", "", 0, "", "", "", "", "", "", false);
 
   @override
   void initState() {
     // TODO: implement initState
     bNavigator = BNavigator(
-                    currentIndex: (i){
-                      setState(() {
-                        index = i;
-                      });
-                    },
-                  );
+                  currentIndex: (i){
+                    setState(() {
+                      index = i;
+                    });
+                  },
+                );
 
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
@@ -64,7 +65,6 @@ class _HomeViewState extends State<HomeView> {
 
     return  Scaffold(
       appBar: _AppBar(),
-      backgroundColor: Colors.white,
       body: Routes(index: index, moduleName:moduleName, vehicle:this.vehicle),
       floatingActionButton: _floatingActionButton(),
       bottomNavigationBar: _bottomNavigationBar(),
@@ -79,8 +79,8 @@ class _HomeViewState extends State<HomeView> {
     );
 
     return AppBar(
-      title:  const Text(GlobalConstants.tittleHome),
       backgroundColor: GlobalColors.backgroudColor,
+      title:  const Text(GlobalConstants.tittleHome),
       actions: <Widget>[
         TextButton.icon(
           style: style,
@@ -112,71 +112,70 @@ class _HomeViewState extends State<HomeView> {
     setState(() {});
   }
 
-  Future<String?> openDialog() => showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title:
-        Expanded(
-            child: Text(
-                style: TextStyle(
-                    fontSize:35,
-                    fontWeight: FontWeight.bold
+  Future<String?> openDialog() {
+      return showDialog(
+        context: context,
+        builder: (context) =>
+            AlertDialog(
+              title:
+              Container(
+                  child: Text(
+                      style: TextStyle(
+                          fontSize: 35,
+                          fontWeight: FontWeight.bold
+                      ),
+                      "Codigo MVA"
+                  )
+              ),
+              content: TextFormField(
+                  controller: mvaController,
+                  autofocus: true,
+                  decoration: InputDecoration(
+                    focusColor: Colors.orange,
+                    fillColor: Colors.orange,
+                    prefixIconColor: Colors.orange,
+                    hintText: 'xxxxxxxxxxxxxxxx',
+                    labelText: 'Codigo de barra',
+                    suffixIcon: const Icon(Icons.qr_code),
+                    labelStyle: const TextStyle(
+                        color: Colors.black45,
+                        fontWeight: FontWeight.w500
+                    ),
+                  )
+              ),
+              actions: [
+                TextButton(
+                    style: TextButton.styleFrom(
+                        textStyle: const TextStyle(fontSize: 20),
+                        backgroundColor: GlobalColors.backgroudColor,
+                        foregroundColor: Colors.white
+                    ),
+                    onPressed: () {
+                      Navigator.of(context).pop(mvaController.text);
+                      mvaController.clear();
+                    },
+                    child: Text('Buscar')
                 ),
-                "Codigo MVA"
-            )
-        ),
-        content:TextFormField(
-            controller: mvaController,
-            enableInteractiveSelection: false,
-            autofocus: true,
-            decoration: InputDecoration(
-              focusColor: Colors.orange,
-              fillColor: Colors.orange,
-              prefixIconColor: Colors.orange,
-              hintText: 'xxxxxxxxxxxxxxxx',
-              labelText: 'Codigo de barra',
-              suffixIcon: const Icon(
-                  Icons.qr_code
-              ),
-              labelStyle: const TextStyle(
-                  color: Colors.black45,
-                  fontWeight: FontWeight.w500
-              ),
-            )
-        ),
-        actions: [
-          TextButton(
-            style: TextButton.styleFrom(
-              textStyle: const TextStyle(fontSize: 20),
-              backgroundColor: Colors.orange,
-              foregroundColor: Colors.white
+                TextButton(
+                    style: TextButton.styleFrom(
+                        textStyle: const TextStyle(fontSize: 20),
+                        backgroundColor: GlobalColors.backgroudColor,
+                        foregroundColor: Colors.white
+                    ),
+                    onPressed: () async {
+                      var result = await BarcodeScanner.scan();
+                      mvaController.text = result.rawContent;
+                    },
+                    child: Icon(Icons.camera_alt_outlined)
+                )
+              ],
             ),
-            onPressed: (){
-              Navigator.of(context).pop(mvaController.text);
-              mvaController.clear();
-            },
-            child: Text('Buscar')
-          ),
-          TextButton(
-              style:  TextButton.styleFrom(
-                  textStyle: const TextStyle(fontSize: 20),
-                  backgroundColor: Colors.orange,
-                  foregroundColor: Colors.white
-              ),
-              onPressed: (){},
-              child: Icon(Icons.camera_alt_outlined)
-          )
-        ],
-      ),
-  );
+      );
+    }
 
-  @override
-  // TODO: implement widget
-  HomeView get widget => super.widget;
-
-  _floatingActionButton() {
-    String textFloating = MVA == '' ? GlobalConstants.findMVA : "Limpiar VMA";
-    IconData iconFloating = MVA == '' ? Icons.search : Icons.remove;
+    _floatingActionButton() {
+      String textFloating = MVA == '' ? GlobalConstants.findMVA : "Limpiar VMA";
+      IconData iconFloating = MVA == '' ? Icons.search : Icons.remove;
 
       return FloatingActionButton.extended(
         onPressed: () async {
@@ -186,7 +185,6 @@ class _HomeViewState extends State<HomeView> {
             setState((){
               this.MVA = mva;
               this.vehicle = _databaseUtil.findVehicleByMVA(this.MVA);
-              print(this.vehicle.mva);
             });
           }else{
             setState((){
@@ -198,13 +196,11 @@ class _HomeViewState extends State<HomeView> {
         label: Text(textFloating),
         icon: Icon(iconFloating),
         backgroundColor: GlobalColors.backgroudColor,
-        splashColor: Colors.blue,
       );
+    }
 
-  }
-
-  _bottomNavigationBar() {
-    return vehicle.mva != '' ? bNavigator : null;
-  }
+    _bottomNavigationBar() {
+      return vehicle.mva != '' ? bNavigator : null;
+    }
 
 }

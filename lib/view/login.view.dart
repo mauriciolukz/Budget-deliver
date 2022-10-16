@@ -31,16 +31,11 @@ class _LoginViewState extends State<LoginView> {
 
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
-       backgroundColor: Colors.white,
-        body:
-        ListView(
-          padding: const EdgeInsets.symmetric(
-            horizontal:40.0,
-            vertical:90.0
-          ),
-          children:<Widget>[
-            Column(
+        body: Center(
+          child: SingleChildScrollView(child: Container(
+            child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 CircleAvatar(
@@ -54,68 +49,58 @@ class _LoginViewState extends State<LoginView> {
                 const Text(
                     GlobalConstants.signIn,
                     style: TextStyle(
-                        fontSize:35,
+                        fontSize:24,
                         fontWeight: FontWeight.bold,
-                         fontFamily: 'NerkoOne'
                     )
                 ),
-                const SizedBox(
-                    width: 160.0,
-                    height: 15.0,
-                    child: Divider(
-                        color: Colors.blueGrey
-                    )
-                ),
-                Form(
-                    key: _formKey,
-                    child:
-                    Column(
-                      children: [
-                         InputText(
-                          keyboardType: TextInputType.emailAddress,
-                          label:GlobalConstants.user,
-                          onChanged: (text) => _user = text,
-                           validator: (value) => value.isEmpty || value == null ? GlobalConstants.enterUser: null,
-                        ),
-                        const Divider(
-                          height: 18.0,
-                        ),
-                         InputText(
-                             validator: (value) => value.isEmpty || value == null ? GlobalConstants.enterPassword: null,
-                             onChanged: (text) => _password = text,
-                            obscureText:true,
-                            label:GlobalConstants.password
-                        ),
-                        const Divider(
-                          height: 15.0,
-                        ),
-                        SizedBox(
-                          width: double.infinity,
-                          child:  TextButton(
-                            style: ButtonStyle(
-                              backgroundColor: MaterialStateProperty.all<Color>(GlobalColors.buttonColor),
-                              foregroundColor: MaterialStateProperty.all<Color>(GlobalColors.textColorButton),
+                SizedBox(
+                  width: 400,
+                  child: Form(
+                      key: _formKey,
+                      child: Column(
+                        children: [
+                          Padding(
+                            padding: EdgeInsets.symmetric(vertical:10.0),
+                            child: InputText(
+                              keyboardType: TextInputType.emailAddress,
+                              label:GlobalConstants.user,
+                              onChanged: (text) => _user = text,
+                              validator: (value) => value.isEmpty || value == null ? GlobalConstants.enterUser: null,
                             ),
-                            onPressed: () async {
-
-                              if (_formKey.currentState!.validate()) {
-
-                                ProgressDialog.show(context);
-                                await login(_user,_password,context,true)
-                                    .then((response) => successfulLogin(response));
-
-                              }
-
-                            },
-                            child: const Text(GlobalConstants.entrar,style: TextStyle(fontSize:14))
-                          )
-                        )
-                      ]
-                    )
-                )
+                          ),
+                           InputText(
+                                validator: (value) => value.isEmpty || value == null ? GlobalConstants.enterPassword: null,
+                                onChanged: (text) => _password = text,
+                                obscureText:true,
+                                label:GlobalConstants.password
+                            ),
+                            SizedBox(
+                              width: double.infinity,
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(vertical:15.0),
+                                child: TextButton(
+                                    style: ButtonStyle(
+                                      backgroundColor: MaterialStateProperty.all<Color>(GlobalColors.buttonColor),
+                                      foregroundColor: MaterialStateProperty.all<Color>(GlobalColors.textColorButton),
+                                    ),
+                                    onPressed: () async {
+                                      if (_formKey.currentState!.validate()) {
+                                        ProgressDialog.show(context);
+                                        await login(_user,_password,context,true)
+                                            .then((response) => successfulLogin(response));
+                                      }
+                                    },
+                                    child: const Text(GlobalConstants.entrar,style: TextStyle(fontSize:14))
+                                ),
+                              ),
+                            )
+                        ],
+                      )
+                  ),
+                ),
               ],
-            )
-          ],
+            ),
+          )),
         )
     );
 

@@ -1,5 +1,5 @@
 
-
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:budgetdeliver/widgets/dialogs.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:get_it/get_it.dart';
@@ -23,6 +23,9 @@ class XmlHttpRequest{
   final client = Client();
 
    Future<http.Response> post(String api, Map<String, dynamic> map,BuildContext context, bool loadDialog,bool token) async {
+
+     var status_connectivity = await testConnectivity(context,loadDialog);
+
      map["platform"] = 'app';
     String baseUrl = "$path$api";
 
@@ -66,9 +69,12 @@ class XmlHttpRequest{
   }
 
   Future<http.Response> get(String api, Map<String, dynamic> map,BuildContext context, bool loadDialog,bool token) async {
-    map["platform"] = 'app';
 
-    var url = Uri.http(path.replaceAll('http://', '').replaceAll('/api', ''), "/api${api}");
+    await testConnectivity(context,loadDialog);
+
+     map["platform"] = 'app';
+
+    var url = Uri.http(path.replaceAll('http://', '').replaceAll('/api', ''), "/api${api}",map);
 
     if(token){
       token_jwt = await _authenticationClient.accessToken;
@@ -78,6 +84,21 @@ class XmlHttpRequest{
     final response = await client.get(url,headers: header).timeout(Duration(seconds: 30)).then((value) => verifResponse(value,context,loadDialog));
     return response;
 
+  }
+
+  testConnectivity(BuildContext context,loadDialog) async {
+    var connectivityResult = await (Connectivity().checkConnectivity());
+    if (connectivityResult == ConnectivityResult.mobile) {
+      return true;
+    } else if (connectivityResult == ConnectivityResult.wifi) {
+      return true;
+    }else{
+      if(loadDialog == true){
+        await ProgressDialog.dissmiss(context);
+      }
+      QuickAlert.show(context: context,type: QuickAlertType.error,text: "throwing new error ineternet");
+      return false;
+    }
   }
 
 
