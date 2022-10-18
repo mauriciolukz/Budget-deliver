@@ -24,7 +24,7 @@ class XmlHttpRequest{
 
    Future<http.Response> post(String api, Map<String, dynamic> map,BuildContext context, bool loadDialog,bool token) async {
 
-     var status_connectivity = await testConnectivity(context,loadDialog);
+     //var status_connectivity = await testConnectivity(context,loadDialog);
 
      map["platform"] = 'app';
     String baseUrl = "$path$api";
@@ -38,13 +38,29 @@ class XmlHttpRequest{
       Uri.parse(baseUrl),
       headers: header,
       body: jsonEncode(map),
-    ).timeout(Duration(seconds: 30)).then((value) => verifResponse(value,context,loadDialog));
+    ).timeout(Duration(seconds: 30)).then((value) => verifResponse(value,context,loadDialog,api));
 
     return response;
 
   }
 
-  Future<http.Response> verifResponse(http.Response response,BuildContext context, bool loadDialog) async {
+  Future<http.Response> get(String api, Map<String, dynamic> map,BuildContext context, bool loadDialog,bool token) async {
+
+    //await testConnectivity(context,loadDialog);
+
+    var url = map.isEmpty ? Uri.http(path.replaceAll('http://', '').replaceAll('/api', ''), "/api${api}"): Uri.http(path.replaceAll('http://', '').replaceAll('/api', ''), "/api${api}",map);
+
+    if(token){
+      token_jwt = await _authenticationClient.accessToken;
+      header["Authorization"] = "Bearer ${token_jwt}";
+    }
+
+    final response = await client.get(url,headers: header).timeout(Duration(seconds: 30)).then((value) => verifResponse(value,context,loadDialog,api));
+    return response;
+
+  }
+
+  Future<http.Response> verifResponse(http.Response response,BuildContext context, bool loadDialog,api) async {
 
     if(loadDialog == true){
       await ProgressDialog.dissmiss(context);
@@ -53,6 +69,7 @@ class XmlHttpRequest{
     try {
 
       if (response.statusCode >= 400) {
+        print("entroooo ${response.statusCode} ${api}");
         var res = json.decode(response.body);
         Error error = Error.fromJson(res);
         QuickAlert.show(context: context,type: QuickAlertType.error,text: error.message);
@@ -62,30 +79,12 @@ class XmlHttpRequest{
       QuickAlert.show(context: context,type: QuickAlertType.error,text: "throwing new error $er");
     }catch (er) {
       QuickAlert.show(context: context,type: QuickAlertType.error,text: "throwing new error $er");
-  }
-
-    return response;
-
-  }
-
-  Future<http.Response> get(String api, Map<String, dynamic> map,BuildContext context, bool loadDialog,bool token) async {
-
-    await testConnectivity(context,loadDialog);
-
-     map["platform"] = 'app';
-
-    var url = Uri.http(path.replaceAll('http://', '').replaceAll('/api', ''), "/api${api}",map);
-
-    if(token){
-      token_jwt = await _authenticationClient.accessToken;
-      header["Authorization"] = "Bearer ${token_jwt}";
     }
 
-    final response = await client.get(url,headers: header).timeout(Duration(seconds: 30)).then((value) => verifResponse(value,context,loadDialog));
     return response;
 
   }
-
+/*
   testConnectivity(BuildContext context,loadDialog) async {
     var connectivityResult = await (Connectivity().checkConnectivity());
     if (connectivityResult == ConnectivityResult.mobile) {
@@ -99,7 +98,7 @@ class XmlHttpRequest{
       QuickAlert.show(context: context,type: QuickAlertType.error,text: "throwing new error ineternet");
       return false;
     }
-  }
+  }*/
 
 
 }

@@ -30,7 +30,7 @@ class _HomeViewState extends State<HomeView> {
   String username = "";
   late TextEditingController mvaController;
   String MVA = '';
-  late Vehicle vehicle = Vehicle(0, "", "", "", "", "", "", 0, "", "", "", "", "", "", false);
+  late Vehicles vehicle = Vehicles(0, "", "", "", "", "", "", 0, "", "", "", "", "", "", false);
 
   @override
   void initState() {
@@ -189,7 +189,7 @@ class _HomeViewState extends State<HomeView> {
           }else{
             setState((){
               this.MVA = '';
-              vehicle = new Vehicle(0, "", "", "", "", "", "", 0, "", "", "", "", "", "", false);
+              vehicle = new Vehicles(0, "", "", "", "", "", "", 0, "", "", "", "", "", "", false);
             });
           }
         },

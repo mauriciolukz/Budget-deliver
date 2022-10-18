@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 class Routes extends StatelessWidget {
   final String moduleName;
   final int index;
-  final Vehicle vehicle;
+  final Vehicles vehicle;
   const Routes({Key? key, required String this.moduleName, required this.index,required this.vehicle}) : super(key: key);
 
   @override

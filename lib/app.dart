@@ -26,10 +26,10 @@ class _AppWindows {
 }
 
 @RealmModel() // define a data model class named `_Car`.
-class _Vehicle {
+class _Vehicles {
 
   late int id;
-  //@PrimaryKey()
+  @PrimaryKey()
   late String mva;
   late String make;
   late String model;
@@ -45,4 +45,16 @@ class _Vehicle {
   late String location;
   late bool isAvailable;
 
+}
+
+@RealmModel() // define a data model class named `_Car`.
+class _Drivers {
+  late int id;
+  late String firstName;
+  late String middleName;
+  late String lastName;
+  late String phone1;
+  late String phone2;
+  @PrimaryKey()
+  late String fullName;
 }

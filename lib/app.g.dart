@@ -110,8 +110,8 @@ class AppWindows extends _AppWindows with RealmEntity, RealmObject {
   }
 }
 
-class Vehicle extends _Vehicle with RealmEntity, RealmObject {
-  Vehicle(
+class Vehicles extends _Vehicles with RealmEntity, RealmObject {
+  Vehicles(
     int id,
     String mva,
     String make,
@@ -145,7 +145,7 @@ class Vehicle extends _Vehicle with RealmEntity, RealmObject {
     RealmObject.set(this, 'isAvailable', isAvailable);
   }
 
-  Vehicle._();
+  Vehicles._();
 
   @override
   int get id => RealmObject.get<int>(this, 'id') as int;
@@ -155,7 +155,7 @@ class Vehicle extends _Vehicle with RealmEntity, RealmObject {
   @override
   String get mva => RealmObject.get<String>(this, 'mva') as String;
   @override
-  set mva(String value) => RealmObject.set(this, 'mva', value);
+  set mva(String value) => throw RealmUnsupportedSetError();
 
   @override
   String get make => RealmObject.get<String>(this, 'make') as String;
@@ -229,16 +229,16 @@ class Vehicle extends _Vehicle with RealmEntity, RealmObject {
   set isAvailable(bool value) => RealmObject.set(this, 'isAvailable', value);
 
   @override
-  Stream<RealmObjectChanges<Vehicle>> get changes =>
-      RealmObject.getChanges<Vehicle>(this);
+  Stream<RealmObjectChanges<Vehicles>> get changes =>
+      RealmObject.getChanges<Vehicles>(this);
 
   static SchemaObject get schema => _schema ??= _initSchema();
   static SchemaObject? _schema;
   static SchemaObject _initSchema() {
-    RealmObject.registerFactory(Vehicle._);
-    return const SchemaObject(Vehicle, 'Vehicle', [
+    RealmObject.registerFactory(Vehicles._);
+    return const SchemaObject(Vehicles, 'Vehicles', [
       SchemaProperty('id', RealmPropertyType.int),
-      SchemaProperty('mva', RealmPropertyType.string),
+      SchemaProperty('mva', RealmPropertyType.string, primaryKey: true),
       SchemaProperty('make', RealmPropertyType.string),
       SchemaProperty('model', RealmPropertyType.string),
       SchemaProperty('color', RealmPropertyType.string),
@@ -252,6 +252,83 @@ class Vehicle extends _Vehicle with RealmEntity, RealmObject {
       SchemaProperty('nextOilChangeKm', RealmPropertyType.string),
       SchemaProperty('location', RealmPropertyType.string),
       SchemaProperty('isAvailable', RealmPropertyType.bool),
+    ]);
+  }
+}
+
+class Drivers extends _Drivers with RealmEntity, RealmObject {
+  Drivers(
+    int id,
+    String firstName,
+    String middleName,
+    String lastName,
+    String phone1,
+    String phone2,
+    String fullName,
+  ) {
+    RealmObject.set(this, 'id', id);
+    RealmObject.set(this, 'firstName', firstName);
+    RealmObject.set(this, 'middleName', middleName);
+    RealmObject.set(this, 'lastName', lastName);
+    RealmObject.set(this, 'phone1', phone1);
+    RealmObject.set(this, 'phone2', phone2);
+    RealmObject.set(this, 'fullName', fullName);
+  }
+
+  Drivers._();
+
+  @override
+  int get id => RealmObject.get<int>(this, 'id') as int;
+  @override
+  set id(int value) => RealmObject.set(this, 'id', value);
+
+  @override
+  String get firstName => RealmObject.get<String>(this, 'firstName') as String;
+  @override
+  set firstName(String value) => RealmObject.set(this, 'firstName', value);
+
+  @override
+  String get middleName =>
+      RealmObject.get<String>(this, 'middleName') as String;
+  @override
+  set middleName(String value) => RealmObject.set(this, 'middleName', value);
+
+  @override
+  String get lastName => RealmObject.get<String>(this, 'lastName') as String;
+  @override
+  set lastName(String value) => RealmObject.set(this, 'lastName', value);
+
+  @override
+  String get phone1 => RealmObject.get<String>(this, 'phone1') as String;
+  @override
+  set phone1(String value) => RealmObject.set(this, 'phone1', value);
+
+  @override
+  String get phone2 => RealmObject.get<String>(this, 'phone2') as String;
+  @override
+  set phone2(String value) => RealmObject.set(this, 'phone2', value);
+
+  @override
+  String get fullName => RealmObject.get<String>(this, 'fullName') as String;
+  @override
+  set fullName(String value) => throw RealmUnsupportedSetError();
+
+  @override
+  Stream<RealmObjectChanges<Drivers>> get changes =>
+      RealmObject.getChanges<Drivers>(this);
+
+  static SchemaObject get schema => _schema ??= _initSchema();
+  static SchemaObject? _schema;
+  static SchemaObject _initSchema() {
+    RealmObject.registerFactory(Drivers._);
+    return const SchemaObject(Drivers, 'Drivers', [
+      SchemaProperty('id', RealmPropertyType.int),
+      SchemaProperty('firstName', RealmPropertyType.string),
+      SchemaProperty('middleName', RealmPropertyType.string),
+      SchemaProperty('lastName', RealmPropertyType.string),
+      SchemaProperty('phone1', RealmPropertyType.string),
+      SchemaProperty('phone2', RealmPropertyType.string),
+      SchemaProperty('fullName', RealmPropertyType.string, primaryKey: true),
     ]);
   }
 }

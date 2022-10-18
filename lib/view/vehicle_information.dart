@@ -1,18 +1,18 @@
 import 'dart:ui';
-import 'package:barcode_scan2/barcode_scan2.dart';
 import 'package:budgetdeliver/app.dart';
 import 'package:budgetdeliver/view/vehicle_delivery_detail.dart';
 import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
-import 'package:quickalert/models/quickalert_type.dart';
-import 'package:quickalert/widgets/quickalert_dialog.dart';
+import 'package:realm/realm.dart';
+import '../utils/database_util.dart';
 import '../utils/global.color.dart';
 import '../utils/global.constants.dart';
 import '../widgets/card_item.dart';
 
 class VehicleInformation extends StatefulWidget {
   final String moduleName;
-  final Vehicle vehicle;
+  final Vehicles vehicle;
   const VehicleInformation({Key? key, required String this.moduleName, required this.vehicle}) : super(key: key);
 
   @override
@@ -21,9 +21,21 @@ class VehicleInformation extends StatefulWidget {
 
 class _InfoVehicleState extends State<VehicleInformation> {
   final _formKey = GlobalKey<FormState>();
-  final bool typeCheck = false;
-  List driversList = ['Paco','Martin','Valenciano','Juaquin','Pereire','Salasar'];
+  late final bool typeCheck;
+  late List driversList = [];
   Object? valueDriver = null;
+  final _databaseUtil = GetIt.instance<DatabaseUtil>();
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    setState(() {typeCheck = widget.vehicle.isAvailable;});
+    RealmResults<Drivers> allDrivers =_databaseUtil.getAllDrivers();
+    allDrivers.forEach((driver) {
+      setState(() {driversList.add(driver.fullName);});
+    });
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -40,11 +52,11 @@ class _InfoVehicleState extends State<VehicleInformation> {
       child: Container(
         child:Column(
           children: <Widget>[
-            loadCardVehicle(
-              typeCheck == true ? Icons.call_received : Icons.call_made,
-              typeCheck == true ? Text(textAlign: TextAlign.center,style: TextStyle(fontWeight: FontWeight.bold),'Check In ${widget.moduleName}') : Text(textAlign: TextAlign.center,style: TextStyle(fontWeight: FontWeight.bold),'Check Out ${widget.moduleName}'),
+            filterCard(
+              widget.vehicle.isAvailable == true ? Icons.call_made : Icons.call_received,
+              widget.vehicle.isAvailable == true ? Text(textAlign: TextAlign.center,style: TextStyle(fontWeight: FontWeight.bold),'Check Out ${widget.moduleName}') : Text(textAlign: TextAlign.center,style: TextStyle(fontWeight: FontWeight.bold),'Check In ${widget.moduleName}'),
               Text(
-                  widget.vehicle.isAvailable == true ? 'Disponible' : 'No disponible',
+                  widget.vehicle.isAvailable == true ? 'Salida' : 'Entrada',
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     fontSize:35,
@@ -53,19 +65,21 @@ class _InfoVehicleState extends State<VehicleInformation> {
                   )
               ),
             ),
-            loadCardVehicle(Icons.car_rental,Text(style: TextStyle(fontWeight: FontWeight.bold),'Model'),Text(widget.vehicle.model)),
-            loadCardVehicle(Icons.info,Text(style: TextStyle(fontWeight: FontWeight.bold),'MVA'),Text(widget.vehicle.mva)),
-            loadCardVehicle(Icons.ad_units_outlined,Text(style: TextStyle(fontWeight: FontWeight.bold),'Placa'),Text(widget.vehicle.plateNum)),
-            loadCardVehicle(Icons.format_color_fill,Text(style: TextStyle(fontWeight: FontWeight.bold),'Color'),Text(widget.vehicle.color)),
-            loadCardVehicle(Icons.key,Text(style: TextStyle(fontWeight: FontWeight.bold),'Llave'),Text(widget.vehicle.keyNum)),
+            filterCard(Icons.car_rental,Text(style: TextStyle(fontWeight: FontWeight.bold),'Model'),Text(widget.vehicle.model)),
+            filterCard(Icons.info,Text(style: TextStyle(fontWeight: FontWeight.bold),'MVA'),Text(widget.vehicle.mva)),
+            filterCard(Icons.ad_units_outlined,Text(style: TextStyle(fontWeight: FontWeight.bold),'Placa'),Text(widget.vehicle.plateNum)),
+            filterCard(Icons.format_color_fill,Text(style: TextStyle(fontWeight: FontWeight.bold),'Color'),Text(widget.vehicle.color)),
+            filterCard(Icons.key,Text(style: TextStyle(fontWeight: FontWeight.bold),'Llave'),Text(widget.vehicle.keyNum)),
             Form(
                 key: _formKey,
                 child: Column(
                 children: [
-                  loadCardVehicle(Icons.account_circle_outlined,Text(style: TextStyle(fontWeight: FontWeight.bold),'Conductor'),
-                      DropdownButton(
+                  filterCard(Icons.account_circle_outlined,Text(style: TextStyle(fontWeight: FontWeight.bold),'Conductor'),
+                    DropdownButtonFormField(
                         dropdownColor: GlobalColors.backgroudColor,
                         value: valueDriver,
+                        elevation: 2,
+                        validator: (value) => value == null ? 'Por favor elegir conductor' : null,
                         onChanged: (newValue) {
                           setState(() {
                             valueDriver = newValue;
@@ -74,12 +88,12 @@ class _InfoVehicleState extends State<VehicleInformation> {
                         items: driversList.map((valueItem) {
                           return DropdownMenuItem(
                               value: valueItem,
-                              child: Text(valueItem)
+                              child: Text(valueItem),
                           );
                         }).toList(),
                       ),
                   ),
-                  loadCardVehicle(Icons.call,Text(style: TextStyle(fontWeight: FontWeight.bold),'Celular'),
+                  filterCard(Icons.call,Text(style: TextStyle(fontWeight: FontWeight.bold),'Celular'),
                     TextFormField(
                       validator: (value) => value!.isEmpty || value == null ? GlobalConstants.enterPassword: null,
                       keyboardType: TextInputType.number,
@@ -92,12 +106,7 @@ class _InfoVehicleState extends State<VehicleInformation> {
                   TextButton(
                       onPressed: (){
                         if (_formKey.currentState!.validate()) {
-                          if(valueDriver == null) {QuickAlert.show(context: context,type: QuickAlertType.error,text: "Elija el conductor"); return;}
-                          if(widget.vehicle.isAvailable){
-                            Navigator.of(context).push(MaterialPageRoute(builder: (context) => VehiculeDeliverDetail()));
-                          }else{
-                            QuickAlert.show(context: context,type: QuickAlertType.error,text: "Vehiculo no disponible");
-                          }
+                            Navigator.of(context).push(MaterialPageRoute(builder: (context) => VehicleDeliveryDetail(moduleName:widget.moduleName,vehicle:widget.vehicle)));
                         }
                       },
                       style: ButtonStyle(
@@ -105,7 +114,8 @@ class _InfoVehicleState extends State<VehicleInformation> {
                         foregroundColor: MaterialStateProperty.all<Color>(GlobalColors.textColorButton),
                       ),
                       child: Text('Continuar')
-                  )],
+                  )
+                ],
                 )
             )
           ],
@@ -114,9 +124,9 @@ class _InfoVehicleState extends State<VehicleInformation> {
     );
   }
 
-  loadCardVehicle(IconData? icon, description, element){
+  filterCard(IconData? icon, description, element){
 
-    if(typeCheck == true && (description.data == 'Celular' || description.data == 'Conductor' )){return Card();}
+    if(widget.moduleName == 'renting' && (description.data == 'Celular' || description.data == 'Conductor' )){return Card();}
     return CardItem(icon:icon,description:description,element:element);
 
   }
@@ -125,7 +135,7 @@ class _InfoVehicleState extends State<VehicleInformation> {
     return Container(
       width: double.infinity,
       alignment: Alignment.center,
-      child: loadCardVehicle(icon,Text(description),Text(tittle)),
+      child: filterCard(icon,Text(description),Text(tittle)),
     );
   }
 
