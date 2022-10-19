@@ -1,3 +1,5 @@
+import 'dart:html';
+
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:realm/realm.dart';
@@ -20,7 +22,7 @@ class VehicleDeliveryDetail extends StatefulWidget {
 class _VehicleDeliveryDetailState extends State<VehicleDeliveryDetail> {
 
   final _databaseUtil = GetIt.instance<DatabaseUtil>();
-  late List branchOfficesList = ['Aero puerto','7 sur','Masaya','Juigalpa'];
+  late List branchOfficesList = []/*['Aero puerto','7 sur','Masaya','Juigalpa']*/;
   late List branchOfficesList2 = ['','','',''];
   late List fuelLevels = [];
   late List fuelLevels2 = ['','','',''];
@@ -30,10 +32,16 @@ class _VehicleDeliveryDetailState extends State<VehicleDeliveryDetail> {
 
   @override
   void initState() {
-    RealmResults<FuelLevels> allFuelLevels = _databaseUtil.getFuelLevels();
+    RealmResults<FuelLevels> allFuelLevels = _databaseUtil.getAllFuelLevels();
     allFuelLevels.forEach((level) {
       setState(() {fuelLevels.add(level.fuelLevel);});
     });
+
+    RealmResults<Locations> allLocations = _databaseUtil.getAllLocations();
+    allLocations.forEach((location) {
+      setState(() {branchOfficesList.add(location.address);});
+    });
+
     // TODO: implement initState
     super.initState();
   }

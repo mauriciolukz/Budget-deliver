@@ -64,3 +64,15 @@ class _FuelLevels {
   @PrimaryKey()
   late String fuelLevel;
 }
+
+@RealmModel() // define a data model class named `_Car`.
+class _Locations {
+  late int id;
+  late String locationCode;
+  late String address;
+  late String phone1;
+  late String phone2;
+  late String createdAt;
+  late String updatedAt;
+}
+

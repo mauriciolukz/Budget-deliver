@@ -4,6 +4,7 @@ import 'package:realm/src/realm_class.dart';
 import '../app.dart';
 import '../service/driver_api.dart';
 import '../service/fuel_levels.dart';
+import '../service/location_api.dart';
 import '../service/vehicle_api.dart';
 
 class DatabaseUtil{
@@ -18,6 +19,7 @@ class DatabaseUtil{
       _realm.deleteAll<Vehicles>();
       _realm.deleteAll<Drivers>();
       _realm.deleteAll<FuelLevels>();
+      _realm.deleteAll<Locations>();
     });
   }
 
@@ -79,7 +81,14 @@ class DatabaseUtil{
       }
     }
 
+    response = await getLocations(context,false);
 
+    if (response.statusCode == 200) {
+      var locations = json.decode(response.body);
+      for (var location in locations) {
+        addLocations(location);
+      }
+    }
 
   }
 
@@ -110,8 +119,18 @@ class DatabaseUtil{
     });
   }
 
-  RealmResults<FuelLevels> getFuelLevels() {
+  void addLocations(location) {
+    _realm.write(() {
+      _realm.add(Locations(location['id'], location['Code'], location['address'], location['phone1'], location['phone2'], location['createdAt'], location['updatedAt']));
+    });
+  }
+
+  RealmResults<FuelLevels> getAllFuelLevels() {
     return _realm.all<FuelLevels>();
+  }
+
+  RealmResults<Locations> getAllLocations() {
+    return _realm.all<Locations>();
   }
 
 }

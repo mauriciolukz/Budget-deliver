@@ -11,7 +11,7 @@ abstract class DependencyInjection{
   
   static void initialize(){
 
-    final config = Configuration.local([Menu.schema,Vehicles.schema,Drivers.schema,FuelLevels.schema]);
+    final config = Configuration.local([Menu.schema,Vehicles.schema,Drivers.schema,FuelLevels.schema,Locations.schema]);
     
     const secureStorage = FlutterSecureStorage();
     final realm = Realm(config);
