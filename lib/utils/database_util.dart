@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:realm/src/realm_class.dart';
 import '../app.dart';
 import '../service/driver_api.dart';
+import '../service/fuel_levels.dart';
 import '../service/vehicle_api.dart';
 
 class DatabaseUtil{
@@ -16,6 +17,7 @@ class DatabaseUtil{
       _realm.deleteAll<Menu>();
       _realm.deleteAll<Vehicles>();
       _realm.deleteAll<Drivers>();
+      _realm.deleteAll<FuelLevels>();
     });
   }
 
@@ -68,11 +70,18 @@ class DatabaseUtil{
       }
     }
 
+    response = await getFuellevels(context,false);
+
+    if (response.statusCode == 200) {
+      var fuellevels = json.decode(response.body);
+      for (var fuellevel in fuellevels) {
+        addFuellevels(fuellevel);
+      }
+    }
+
+
+
   }
-  /*
-  RealmResults<Vehicles> getAllVehicles() {
-    return _realm.all<Vehicles>();
-  }*/
 
   Vehicles findVehicleByMVA(String mva) {
     Vehicles vehicle = new Vehicles(0, "", "", "", "", "", "", 0, "", "", "", "", "", "", false);
@@ -95,15 +104,14 @@ class DatabaseUtil{
     return _realm.all<Drivers>();
   }
 
-  /*
-  List getDrivers() {
+  void addFuellevels(fuellevel) {
+    _realm.write(() {
+      _realm.add(FuelLevels(fuellevel));
+    });
+  }
 
-  }*/
-
-
-
-
-
-
+  RealmResults<FuelLevels> getFuelLevels() {
+    return _realm.all<FuelLevels>();
+  }
 
 }

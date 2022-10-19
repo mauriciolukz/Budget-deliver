@@ -9,6 +9,7 @@ import '../utils/database_util.dart';
 import '../utils/global.color.dart';
 import '../utils/global.constants.dart';
 import '../widgets/bottom_nav.dart';
+import '../widgets/button_stand.dart';
 import 'login.view.dart';
 
 class HomeView extends StatefulWidget {
@@ -144,30 +145,15 @@ class _HomeViewState extends State<HomeView> {
                   )
               ),
               actions: [
-                TextButton(
-                    style: TextButton.styleFrom(
-                        textStyle: const TextStyle(fontSize: 20),
-                        backgroundColor: GlobalColors.backgroudColor,
-                        foregroundColor: Colors.white
-                    ),
-                    onPressed: () {
-                      Navigator.of(context).pop(mvaController.text);
-                      mvaController.clear();
-                    },
-                    child: Text('Buscar')
-                ),
-                TextButton(
-                    style: TextButton.styleFrom(
-                        textStyle: const TextStyle(fontSize: 20),
-                        backgroundColor: GlobalColors.backgroudColor,
-                        foregroundColor: Colors.white
-                    ),
-                    onPressed: () async {
-                      var result = await BarcodeScanner.scan();
-                      mvaController.text = result.rawContent;
-                    },
-                    child: Icon(Icons.camera_alt_outlined)
-                )
+                ButtonStand(text:'Buscar',onPressed: (){
+                  Navigator.of(context).pop(mvaController.text);
+                  mvaController.clear();
+                },width: 100,height: 40),
+                ButtonStand(text:'Camara',onPressed: () async {
+                  var result = await BarcodeScanner.scan();
+                  mvaController.text = result.rawContent;
+                  //child: Icon(Icons.camera_alt_outlined)
+                },width: 100,height: 40),
               ],
             ),
       );

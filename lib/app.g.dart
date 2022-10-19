@@ -76,7 +76,7 @@ class AppWindows extends _AppWindows with RealmEntity, RealmObject {
   @override
   int get id => RealmObject.get<int>(this, 'id') as int;
   @override
-  set id(int value) => RealmObject.set(this, 'id', value);
+  set id(int value) => throw RealmUnsupportedSetError();
 
   @override
   String get name => RealmObject.get<String>(this, 'name') as String;
@@ -102,7 +102,7 @@ class AppWindows extends _AppWindows with RealmEntity, RealmObject {
   static SchemaObject _initSchema() {
     RealmObject.registerFactory(AppWindows._);
     return const SchemaObject(AppWindows, 'AppWindows', [
-      SchemaProperty('id', RealmPropertyType.int),
+      SchemaProperty('id', RealmPropertyType.int, primaryKey: true),
       SchemaProperty('name', RealmPropertyType.string),
       SchemaProperty('caption', RealmPropertyType.string),
       SchemaProperty('icon', RealmPropertyType.string),
@@ -329,6 +329,34 @@ class Drivers extends _Drivers with RealmEntity, RealmObject {
       SchemaProperty('phone1', RealmPropertyType.string),
       SchemaProperty('phone2', RealmPropertyType.string),
       SchemaProperty('fullName', RealmPropertyType.string, primaryKey: true),
+    ]);
+  }
+}
+
+class FuelLevels extends _FuelLevels with RealmEntity, RealmObject {
+  FuelLevels(
+    String fuelLevel,
+  ) {
+    RealmObject.set(this, 'fuelLevel', fuelLevel);
+  }
+
+  FuelLevels._();
+
+  @override
+  String get fuelLevel => RealmObject.get<String>(this, 'fuelLevel') as String;
+  @override
+  set fuelLevel(String value) => throw RealmUnsupportedSetError();
+
+  @override
+  Stream<RealmObjectChanges<FuelLevels>> get changes =>
+      RealmObject.getChanges<FuelLevels>(this);
+
+  static SchemaObject get schema => _schema ??= _initSchema();
+  static SchemaObject? _schema;
+  static SchemaObject _initSchema() {
+    RealmObject.registerFactory(FuelLevels._);
+    return const SchemaObject(FuelLevels, 'FuelLevels', [
+      SchemaProperty('fuelLevel', RealmPropertyType.string, primaryKey: true),
     ]);
   }
 }

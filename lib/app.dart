@@ -17,7 +17,7 @@ class _Menu {
 
 @RealmModel() // define a data model class named `_Car`.
 class _AppWindows {
-
+  @PrimaryKey()
   late int id;
   late String name;
   late String caption;
@@ -57,4 +57,10 @@ class _Drivers {
   late String phone2;
   @PrimaryKey()
   late String fullName;
+}
+
+@RealmModel() // define a data model class named `_Car`.
+class _FuelLevels {
+  @PrimaryKey()
+  late String fuelLevel;
 }

@@ -5,6 +5,7 @@ class InputText extends StatelessWidget {
   final String label;
   final TextInputType keyboardType;
   final bool obscureText;
+  final IconData? icon;
   final void Function(String text) onChanged;
   final String? Function(dynamic value) validator;
 
@@ -15,6 +16,7 @@ class InputText extends StatelessWidget {
     this.obscureText = false,
     required this.onChanged,
     required this.validator,
+    this.icon,
   }) : super(key: key);
 
   @override
@@ -30,14 +32,12 @@ class InputText extends StatelessWidget {
       decoration: InputDecoration(
         hintText: label,
         labelText: label,
-        suffixIcon: const Icon(
-          Icons.verified_user
-        ),
+        suffixIcon: Icon(this.icon),
         labelStyle: const TextStyle(
           color: Colors.black45,
-          fontWeight: FontWeight.w500
+          fontWeight: FontWeight.w500,
         ),
-        border: OutlineInputBorder(borderRadius: BorderRadius.circular(20.0)),
+        border: OutlineInputBorder(borderRadius: BorderRadius.circular(80.0)),
       )
     );
 

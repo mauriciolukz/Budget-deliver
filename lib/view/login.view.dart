@@ -8,6 +8,7 @@ import '../data/authentication_client.dart';
 import '../models/user.dart';
 import '../service/user_api.dart';
 import '../utils/database_util.dart';
+import '../widgets/button_stand.dart';
 import '../widgets/dialogs.dart';
 import '../widgets/input_text.dart';
 
@@ -66,32 +67,27 @@ class _LoginViewState extends State<LoginView> {
                               label:GlobalConstants.user,
                               onChanged: (text) => _user = text,
                               validator: (value) => value.isEmpty || value == null ? GlobalConstants.enterUser: null,
+                              icon: Icons.verified_user,
                             ),
                           ),
                            InputText(
                                 validator: (value) => value.isEmpty || value == null ? GlobalConstants.enterPassword: null,
                                 onChanged: (text) => _password = text,
                                 obscureText:true,
-                                label:GlobalConstants.password
+                                label:GlobalConstants.password,
+                                icon: Icons.password,
                             ),
                             SizedBox(
                               width: double.infinity,
                               child: Padding(
                                 padding: const EdgeInsets.symmetric(vertical:15.0),
-                                child: TextButton(
-                                    style: ButtonStyle(
-                                      backgroundColor: MaterialStateProperty.all<Color>(GlobalColors.buttonColor),
-                                      foregroundColor: MaterialStateProperty.all<Color>(GlobalColors.textColorButton),
-                                    ),
-                                    onPressed: () async {
-                                      if (_formKey.currentState!.validate()) {
-                                        ProgressDialog.show(context);
-                                        await login(_user,_password,context,true)
-                                            .then((response) => successfulLogin(response));
-                                      }
-                                    },
-                                    child: const Text(GlobalConstants.entrar,style: TextStyle(fontSize:14))
-                                ),
+                                child:ButtonStand(text:'Continuar',onPressed: () async {
+                                  if (_formKey.currentState!.validate()) {
+                                    ProgressDialog.show(context);
+                                    await login(_user,_password,context,true)
+                                        .then((response) => successfulLogin(response));
+                                  }
+                                },width: 300,height: 50),
                               ),
                             )
                         ],

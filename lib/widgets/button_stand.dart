@@ -4,11 +4,11 @@ import '../utils/global.color.dart';
 
 class ButtonStand extends StatefulWidget {
   final String text;
-  final double width;
-  final double height;
+  final double? width;
+  final double? height;
   final VoidCallback onPressed;
 
-  const ButtonStand({Key? key,required this.text,required this.onPressed,required this.height,required this.width}) : super(key: key);
+  const ButtonStand({Key? key,required this.text,required this.onPressed,this.height,this.width}) : super(key: key);
 
   @override
   State<ButtonStand> createState() => _ButtonStandState();
@@ -29,7 +29,7 @@ class _ButtonStandState extends State<ButtonStand> {
       child: (
         Container(
           margin: EdgeInsets.only(
-            top: 30.0,
+            top: 10.0,
             left:20.0,
             right: 20.0
           ),

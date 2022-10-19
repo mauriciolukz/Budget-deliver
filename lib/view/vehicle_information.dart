@@ -8,6 +8,7 @@ import 'package:realm/realm.dart';
 import '../utils/database_util.dart';
 import '../utils/global.color.dart';
 import '../utils/global.constants.dart';
+import '../widgets/button_stand.dart';
 import '../widgets/card_item.dart';
 
 class VehicleInformation extends StatefulWidget {
@@ -30,7 +31,7 @@ class _InfoVehicleState extends State<VehicleInformation> {
   void initState() {
     // TODO: implement initState
     setState(() {typeCheck = widget.vehicle.isAvailable;});
-    RealmResults<Drivers> allDrivers =_databaseUtil.getAllDrivers();
+    RealmResults<Drivers> allDrivers = _databaseUtil.getAllDrivers();
     allDrivers.forEach((driver) {
       setState(() {driversList.add(driver.fullName);});
     });
@@ -103,18 +104,11 @@ class _InfoVehicleState extends State<VehicleInformation> {
                       inputFormatters: [MaskTextInputFormatter(mask: '+### ########',filter: { "#": RegExp(r'[0-9]') },type: MaskAutoCompletionType.lazy)],
                     ),
                   ),
-                  TextButton(
-                      onPressed: (){
-                        if (_formKey.currentState!.validate()) {
-                            Navigator.of(context).push(MaterialPageRoute(builder: (context) => VehicleDeliveryDetail(moduleName:widget.moduleName,vehicle:widget.vehicle)));
-                        }
-                      },
-                      style: ButtonStyle(
-                        backgroundColor: MaterialStateProperty.all<Color>(GlobalColors.buttonColor),
-                        foregroundColor: MaterialStateProperty.all<Color>(GlobalColors.textColorButton),
-                      ),
-                      child: Text('Continuar')
-                  )
+                  ButtonStand(text:'Continuar',onPressed: (){
+                    if (_formKey.currentState!.validate()) {
+                      Navigator.of(context).push(MaterialPageRoute(builder: (context) => VehicleDeliveryDetail(moduleName:widget.moduleName,vehicle:widget.vehicle)));
+                    }
+                  },width: 300,height: 50),
                 ],
                 )
             )
