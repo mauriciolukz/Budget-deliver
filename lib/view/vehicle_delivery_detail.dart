@@ -1,5 +1,6 @@
-import 'dart:html';
 
+import 'package:budgetdeliver/utils/global.constants.dart';
+import 'package:budgetdeliver/view/car_parts.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:realm/realm.dart';
@@ -8,6 +9,7 @@ import '../app.dart';
 import '../utils/global.color.dart';
 import '../widgets/button_stand.dart';
 import '../widgets/card_item.dart';
+import '../widgets/dropdown_button_form_field_stand.dart';
 import '../widgets/input_text.dart';
 
 class VehicleDeliveryDetail extends StatefulWidget {
@@ -22,24 +24,27 @@ class VehicleDeliveryDetail extends StatefulWidget {
 class _VehicleDeliveryDetailState extends State<VehicleDeliveryDetail> {
 
   final _databaseUtil = GetIt.instance<DatabaseUtil>();
-  late List branchOfficesList = []/*['Aero puerto','7 sur','Masaya','Juigalpa']*/;
-  late List branchOfficesList2 = ['','','',''];
+  late List locations = [];
   late List fuelLevels = [];
-  late List fuelLevels2 = ['','','',''];
-  Object? valueBranchOffices = null;
-  Object? valuefuelLevel = null;
+  Object? valueFuelLevel = null;
   final _formKey = GlobalKey<FormState>();
+  late String locationOut = "CUALQUIER COSA"/*widget.vehicle.location*/;
+  late Object? locationIn = null;
+  late int km;
+  late int oil;
+  late String docMov = "UNP-TA-1526";
 
   @override
   void initState() {
+
     RealmResults<FuelLevels> allFuelLevels = _databaseUtil.getAllFuelLevels();
-    allFuelLevels.forEach((level) {
-      setState(() {fuelLevels.add(level.fuelLevel);});
+    allFuelLevels.forEach((fuelLevel) {
+      setState(() {fuelLevels.add(fuelLevel.fuelLevel);});
     });
 
     RealmResults<Locations> allLocations = _databaseUtil.getAllLocations();
     allLocations.forEach((location) {
-      setState(() {branchOfficesList.add(location.address);});
+      setState(() {locations.add(location.locationName);});
     });
 
     // TODO: implement initState
@@ -72,30 +77,43 @@ class _VehicleDeliveryDetailState extends State<VehicleDeliveryDetail> {
                     child: Column(
                   children: [
                     filterCard(Icons.front_hand_outlined,Text(style: TextStyle(fontWeight: FontWeight.bold),'Detalles de la entrega',textAlign: TextAlign.center,),Text('')),
-                    filterCard(Icons.emoji_transportation,Text(style: TextStyle(fontWeight: FontWeight.bold),'Sucursal Entrega'),_dropdownButtonFormField(valueBranchOffices,branchOfficesList)),
-                    filterCard(Icons.emoji_transportation,Text(style: TextStyle(fontWeight: FontWeight.bold),'Sucursal Ingreso'),_dropdownButtonFormField(0,branchOfficesList)),
-                    filterCard(Icons.car_repair_outlined,Text(style: TextStyle(fontWeight: FontWeight.bold),'Kilometraje'),
+                    filterCard(Icons.emoji_transportation,Text(style: TextStyle(fontWeight: FontWeight.bold),'Sucursal Entrega'),Text(locationOut)),
+                    filterCard(Icons.emoji_transportation,Text(style: TextStyle(fontWeight: FontWeight.bold),'Sucursal Ingreso'),
+                        DropDownButtonFormFieldStand(
+                           listParam: locations,
+                           textValidator :GlobalConstants.requiredField,
+                           onChanged: (value) => locationIn = value,
+                            setValueDrop:locationIn
+                        )
+                    ),
+                    filterCard(Icons.car_repair_outlined,Text(style: TextStyle(fontWeight: FontWeight.bold),'Kilometraje(KM)'),
                       InputText(
-                          validator: (value) => value.isEmpty || value == null ? "registrar kilometraje": null,
-                          //onChanged: (text) => _password = text,
-                          obscureText:true
-                          , onChanged: (String text) {  },
+                          validator: (value) => value.isEmpty || value == null ? GlobalConstants.requiredField: null,
+                          onChanged: (text) => km = text as int,
+                          obscureText:true,
                         keyboardType: TextInputType.number,
                       ),
                     ),
-                    filterCard(Icons.local_gas_station_outlined,Text(style: TextStyle(fontWeight: FontWeight.bold),'Gasolina'),_dropdownButtonFormField2(valuefuelLevel,fuelLevels)),
-                    filterCard(Icons.water_drop,Text(style: TextStyle(fontWeight: FontWeight.bold),'Aceite'),
+                    filterCard(Icons.local_gas_station_outlined,Text(style: TextStyle(fontWeight: FontWeight.bold),'Gasolina'),
+                        DropDownButtonFormFieldStand(
+                            listParam: fuelLevels,
+                            textValidator :GlobalConstants.requiredField,
+                            onChanged: (value) => valueFuelLevel = value,
+                            setValueDrop:valueFuelLevel
+                        )
+                    ),
+                    filterCard(Icons.water_drop,Text(style: TextStyle(fontWeight: FontWeight.bold),'Aceite(KM)'),
                       InputText(
-                        validator: (value) => value.isEmpty || value == null ? "registrar aceite": null,
-                        //onChanged: (text) => _password = text,
+                        validator: (value) => value.isEmpty || value == null ? GlobalConstants.requiredField: null,
+                        keyboardType: TextInputType.number,
+                        onChanged: (text) => oil = text as int,
                         obscureText:true
-                        , onChanged: (String text) {  },
                       ),
                     ),
-                    filterCard(Icons.feed_outlined,Text(style: TextStyle(fontWeight: FontWeight.bold),'Numero de movimiento'),Text("UNP-TA-1526")),
+                    filterCard(Icons.feed_outlined,Text(style: TextStyle(fontWeight: FontWeight.bold),'Numero de movimiento'),Text(docMov)),
                     ButtonStand(text:'Continuar',onPressed: (){
                       if (_formKey.currentState!.validate()) {
-                        //Navigator.of(context).push(MaterialPageRoute(builder: (context) => VehicleDeliveryDetail(moduleName:widget.moduleName,vehicle:widget.vehicle)));
+                        Navigator.of(context).push(MaterialPageRoute(builder: (context) => CartParts(moduleName:widget.moduleName,vehicle:widget.vehicle)));
                       }
                     },width: 300,height: 50),
                   ]
@@ -113,45 +131,4 @@ class _VehicleDeliveryDetailState extends State<VehicleDeliveryDetail> {
 
   }
 
-  DropdownButtonFormField _dropdownButtonFormField(i,listtt) {
-    //if(i > 1) return DropdownButton;
-    return DropdownButtonFormField(
-        dropdownColor: GlobalColors.backgroudColor,
-        value: valueBranchOffices,
-        elevation: 2,
-        validator: (value) => value == null ? 'Por favor elegir sucursal' : null,
-        onChanged: (newValue) {
-          setState(() {
-            valueBranchOffices = newValue;
-          });
-        },
-        items: branchOfficesList.map((valueItem) {
-        return DropdownMenuItem(
-          value: valueItem,
-          child: Text(valueItem),
-        );
-      }).toList(),
-    );
-  }
-
-  DropdownButtonFormField _dropdownButtonFormField2(i,listtt) {
-    //if(i > 1) return DropdownButton;
-    return DropdownButtonFormField(
-      dropdownColor: GlobalColors.backgroudColor,
-      value: valuefuelLevel,
-      elevation: 2,
-      validator: (value) => value == null ? 'Por favor elegir gasolina' : null,
-      onChanged: (newValue) {
-        setState(() {
-          valuefuelLevel = newValue;
-        });
-      },
-      items: fuelLevels.map((valueItem) {
-        return DropdownMenuItem(
-          value: valueItem,
-          child: Text(valueItem),
-        );
-      }).toList(),
-    );
-  }
 }

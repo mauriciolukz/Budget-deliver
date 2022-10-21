@@ -121,7 +121,7 @@ class DatabaseUtil{
 
   void addLocations(location) {
     _realm.write(() {
-      _realm.add(Locations(location['id'], location['Code'], location['address'], location['phone1'], location['phone2'], location['createdAt'], location['updatedAt']));
+      _realm.add(Locations(location['id'], location['locationName'], location['address'], location['phone1'], location['phone2']));
     });
   }
 

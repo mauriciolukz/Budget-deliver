@@ -10,6 +10,7 @@ import '../utils/global.color.dart';
 import '../utils/global.constants.dart';
 import '../widgets/button_stand.dart';
 import '../widgets/card_item.dart';
+import '../widgets/dropdown_button_form_field_stand.dart';
 
 class VehicleInformation extends StatefulWidget {
   final String moduleName;
@@ -76,27 +77,16 @@ class _InfoVehicleState extends State<VehicleInformation> {
                 child: Column(
                 children: [
                   filterCard(Icons.account_circle_outlined,Text(style: TextStyle(fontWeight: FontWeight.bold),'Conductor'),
-                    DropdownButtonFormField(
-                        dropdownColor: GlobalColors.backgroudColor,
-                        value: valueDriver,
-                        elevation: 2,
-                        validator: (value) => value == null ? 'Por favor elegir conductor' : null,
-                        onChanged: (newValue) {
-                          setState(() {
-                            valueDriver = newValue;
-                          });
-                        },
-                        items: driversList.map((valueItem) {
-                          return DropdownMenuItem(
-                              value: valueItem,
-                              child: Text(valueItem),
-                          );
-                        }).toList(),
-                      ),
+                    DropDownButtonFormFieldStand(
+                        listParam: driversList,
+                        textValidator :GlobalConstants.requiredField,
+                        onChanged: (value) => valueDriver = value,
+                        setValueDrop:valueDriver
+                    )
                   ),
                   filterCard(Icons.call,Text(style: TextStyle(fontWeight: FontWeight.bold),'Celular'),
                     TextFormField(
-                      validator: (value) => value!.isEmpty || value == null ? GlobalConstants.enterPassword: null,
+                      validator: (value) => value!.isEmpty || value == null ? GlobalConstants.requiredField: null,
                       keyboardType: TextInputType.number,
                       decoration: InputDecoration(
                         hintText: "+505 00000000",

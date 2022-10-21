@@ -9,8 +9,6 @@ class GlobalConstants{
   static const String signIn  = "Iniciar sesion";
   static const String password  = "Contraseña";
   static const String entrar  = "Entrar";
-  static const String enterPassword  = "Por favor ingresar contraseña";
-  static const String enterUser  = "Por favor ingresar usuario";
   static const String tittleHome  = "Budget Vehiculos";
   static const String refresh  = "Actualizar";
   static const String exit  = "Salir";
@@ -22,5 +20,6 @@ class GlobalConstants{
 
   /*************************** Mensajes de ventanas ***********************/
   static const String unknownError  = "Error inesperado";
+  static const String requiredField  = "El campo es requerido";
 
 }

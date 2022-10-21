@@ -364,20 +364,16 @@ class FuelLevels extends _FuelLevels with RealmEntity, RealmObject {
 class Locations extends _Locations with RealmEntity, RealmObject {
   Locations(
     int id,
-    String locationCode,
+    String locationName,
     String address,
     String phone1,
     String phone2,
-    String createdAt,
-    String updatedAt,
   ) {
     RealmObject.set(this, 'id', id);
-    RealmObject.set(this, 'locationCode', locationCode);
+    RealmObject.set(this, 'locationName', locationName);
     RealmObject.set(this, 'address', address);
     RealmObject.set(this, 'phone1', phone1);
     RealmObject.set(this, 'phone2', phone2);
-    RealmObject.set(this, 'createdAt', createdAt);
-    RealmObject.set(this, 'updatedAt', updatedAt);
   }
 
   Locations._();
@@ -388,11 +384,11 @@ class Locations extends _Locations with RealmEntity, RealmObject {
   set id(int value) => RealmObject.set(this, 'id', value);
 
   @override
-  String get locationCode =>
-      RealmObject.get<String>(this, 'locationCode') as String;
+  String get locationName =>
+      RealmObject.get<String>(this, 'locationName') as String;
   @override
-  set locationCode(String value) =>
-      RealmObject.set(this, 'locationCode', value);
+  set locationName(String value) =>
+      RealmObject.set(this, 'locationName', value);
 
   @override
   String get address => RealmObject.get<String>(this, 'address') as String;
@@ -410,16 +406,6 @@ class Locations extends _Locations with RealmEntity, RealmObject {
   set phone2(String value) => RealmObject.set(this, 'phone2', value);
 
   @override
-  String get createdAt => RealmObject.get<String>(this, 'createdAt') as String;
-  @override
-  set createdAt(String value) => RealmObject.set(this, 'createdAt', value);
-
-  @override
-  String get updatedAt => RealmObject.get<String>(this, 'updatedAt') as String;
-  @override
-  set updatedAt(String value) => RealmObject.set(this, 'updatedAt', value);
-
-  @override
   Stream<RealmObjectChanges<Locations>> get changes =>
       RealmObject.getChanges<Locations>(this);
 
@@ -429,12 +415,10 @@ class Locations extends _Locations with RealmEntity, RealmObject {
     RealmObject.registerFactory(Locations._);
     return const SchemaObject(Locations, 'Locations', [
       SchemaProperty('id', RealmPropertyType.int),
-      SchemaProperty('locationCode', RealmPropertyType.string),
+      SchemaProperty('locationName', RealmPropertyType.string),
       SchemaProperty('address', RealmPropertyType.string),
       SchemaProperty('phone1', RealmPropertyType.string),
       SchemaProperty('phone2', RealmPropertyType.string),
-      SchemaProperty('createdAt', RealmPropertyType.string),
-      SchemaProperty('updatedAt', RealmPropertyType.string),
     ]);
   }
 }
