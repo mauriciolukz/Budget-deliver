@@ -46,7 +46,7 @@ class _InfoVehicleState extends State<VehicleInformation> {
       return loadAdvise(Icons.find_in_page_outlined,'Buscar un vehiculo','Click boton parte inferior derecha');
     }
 
-    if(widget.vehicle.mva == ''){
+    if(widget.vehicle == null){
       return loadAdvise(Icons.cancel_outlined,'Vehiculo no encontrado','Volver a intentar');
     }
 

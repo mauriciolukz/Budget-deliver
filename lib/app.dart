@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:realm/realm.dart';  // import realm package
 
 part 'app.g.dart'; // declare a part file.
@@ -73,4 +75,14 @@ class _Locations {
   late String phone1;
   late String phone2;
 }
+
+@RealmModel() // define a data model class named `_Car`.
+class _ItemsMaster {
+  late int id;
+  late String description;
+  late int itemType;
+  late bool useQty;
+  late String itemTypeDesc;
+}
+
 

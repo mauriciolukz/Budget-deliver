@@ -422,3 +422,66 @@ class Locations extends _Locations with RealmEntity, RealmObject {
     ]);
   }
 }
+
+class ItemsMaster extends _ItemsMaster with RealmEntity, RealmObject {
+  ItemsMaster(
+    int id,
+    String description,
+    int itemType,
+    bool useQty,
+    String itemTypeDesc,
+  ) {
+    RealmObject.set(this, 'id', id);
+    RealmObject.set(this, 'description', description);
+    RealmObject.set(this, 'itemType', itemType);
+    RealmObject.set(this, 'useQty', useQty);
+    RealmObject.set(this, 'itemTypeDesc', itemTypeDesc);
+  }
+
+  ItemsMaster._();
+
+  @override
+  int get id => RealmObject.get<int>(this, 'id') as int;
+  @override
+  set id(int value) => RealmObject.set(this, 'id', value);
+
+  @override
+  String get description =>
+      RealmObject.get<String>(this, 'description') as String;
+  @override
+  set description(String value) => RealmObject.set(this, 'description', value);
+
+  @override
+  int get itemType => RealmObject.get<int>(this, 'itemType') as int;
+  @override
+  set itemType(int value) => RealmObject.set(this, 'itemType', value);
+
+  @override
+  bool get useQty => RealmObject.get<bool>(this, 'useQty') as bool;
+  @override
+  set useQty(bool value) => RealmObject.set(this, 'useQty', value);
+
+  @override
+  String get itemTypeDesc =>
+      RealmObject.get<String>(this, 'itemTypeDesc') as String;
+  @override
+  set itemTypeDesc(String value) =>
+      RealmObject.set(this, 'itemTypeDesc', value);
+
+  @override
+  Stream<RealmObjectChanges<ItemsMaster>> get changes =>
+      RealmObject.getChanges<ItemsMaster>(this);
+
+  static SchemaObject get schema => _schema ??= _initSchema();
+  static SchemaObject? _schema;
+  static SchemaObject _initSchema() {
+    RealmObject.registerFactory(ItemsMaster._);
+    return const SchemaObject(ItemsMaster, 'ItemsMaster', [
+      SchemaProperty('id', RealmPropertyType.int),
+      SchemaProperty('description', RealmPropertyType.string),
+      SchemaProperty('itemType', RealmPropertyType.int),
+      SchemaProperty('useQty', RealmPropertyType.bool),
+      SchemaProperty('itemTypeDesc', RealmPropertyType.string),
+    ]);
+  }
+}

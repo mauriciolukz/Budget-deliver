@@ -90,7 +90,6 @@ class _VehicleDeliveryDetailState extends State<VehicleDeliveryDetail> {
                       InputText(
                           validator: (value) => value.isEmpty || value == null ? GlobalConstants.requiredField: null,
                           onChanged: (text) => km = text as int,
-                          obscureText:true,
                         keyboardType: TextInputType.number,
                       ),
                     ),
@@ -107,7 +106,6 @@ class _VehicleDeliveryDetailState extends State<VehicleDeliveryDetail> {
                         validator: (value) => value.isEmpty || value == null ? GlobalConstants.requiredField: null,
                         keyboardType: TextInputType.number,
                         onChanged: (text) => oil = text as int,
-                        obscureText:true
                       ),
                     ),
                     filterCard(Icons.feed_outlined,Text(style: TextStyle(fontWeight: FontWeight.bold),'Numero de movimiento'),Text(docMov)),

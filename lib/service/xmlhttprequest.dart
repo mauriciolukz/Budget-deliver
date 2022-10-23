@@ -24,7 +24,7 @@ class XmlHttpRequest{
 
    Future<http.Response> post(String api, Map<String, dynamic> map,BuildContext context, bool loadDialog,bool token) async {
 
-     //var status_connectivity = await testConnectivity(context,loadDialog);
+     await testConnectivity(context,loadDialog);
 
      map["platform"] = 'app';
     String baseUrl = "$path$api";
@@ -46,7 +46,7 @@ class XmlHttpRequest{
 
   Future<http.Response> get(String api, Map<String, dynamic> map,BuildContext context, bool loadDialog,bool token) async {
 
-    //await testConnectivity(context,loadDialog);
+    await testConnectivity(context,loadDialog);
 
     var url = map.isEmpty ? Uri.http(path.replaceAll('http://', '').replaceAll('/api', ''), "/api${api}"): Uri.http(path.replaceAll('http://', '').replaceAll('/api', ''), "/api${api}",map);
 
@@ -84,7 +84,7 @@ class XmlHttpRequest{
     return response;
 
   }
-/*
+
   testConnectivity(BuildContext context,loadDialog) async {
     var connectivityResult = await (Connectivity().checkConnectivity());
     if (connectivityResult == ConnectivityResult.mobile) {
@@ -98,7 +98,7 @@ class XmlHttpRequest{
       QuickAlert.show(context: context,type: QuickAlertType.error,text: "throwing new error ineternet");
       return false;
     }
-  }*/
+  }
 
 
 }

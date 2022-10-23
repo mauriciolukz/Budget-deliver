@@ -4,6 +4,7 @@ import 'package:realm/src/realm_class.dart';
 import '../app.dart';
 import '../service/driver_api.dart';
 import '../service/fuel_levels.dart';
+import '../service/items_master.dart';
 import '../service/location_api.dart';
 import '../service/vehicle_api.dart';
 
@@ -90,17 +91,22 @@ class DatabaseUtil{
       }
     }
 
+    response = await getItemsMaster(context,false);
+
+    if (response.statusCode == 200) {
+      var itemsMaster = json.decode(response.body);
+      for (var item in itemsMaster['items']) {
+        addItemsMaster(item);
+      }
+    }
+
   }
 
   Vehicles findVehicleByMVA(String mva) {
+
     Vehicles vehicle = new Vehicles(0, "", "", "", "", "", "", 0, "", "", "", "", "", "", false);
-    var result = _realm.all<Vehicles>().query("mva == '$mva'");
+    return _realm.all<Vehicles>().query("mva == '$mva'").first;
 
-    if(result.length > 0){
-      vehicle = result[0];
-    }
-
-    return vehicle;
   }
 
   void addDrivers(driver) {
@@ -131,6 +137,16 @@ class DatabaseUtil{
 
   RealmResults<Locations> getAllLocations() {
     return _realm.all<Locations>();
+  }
+
+  void addItemsMaster(item) {
+    _realm.write(() {
+      _realm.add(ItemsMaster(item['id'], item['description'], item['itemType'], item['useQty'], item['itemTypeDesc']));
+    });
+  }
+
+  RealmResults<ItemsMaster> getAllItemsMaster() {
+    return _realm.all<ItemsMaster>();
   }
 
 }

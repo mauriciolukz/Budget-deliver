@@ -42,7 +42,7 @@ class _DropDownButtonFormFieldStandState extends State<DropDownButtonFormFieldSt
             items: widget.listParam.map((valueItem) {
             return DropdownMenuItem(
               value: valueItem,
-              child: Text(valueItem),
+              child: Text(valueItem.toString()),
             );
             }).toList(),
             icon: Padding( //Icon at tail, arrow bottom is default icon

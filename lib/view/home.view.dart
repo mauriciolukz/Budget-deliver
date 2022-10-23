@@ -171,6 +171,7 @@ class _HomeViewState extends State<HomeView> {
             setState((){
               this.MVA = mva;
               this.vehicle = _databaseUtil.findVehicleByMVA(this.MVA);
+              print(this.vehicle);
             });
           }else{
             setState((){
