@@ -85,4 +85,22 @@ class _ItemsMaster {
   late String itemTypeDesc;
 }
 
+@RealmModel() // define a data model class named `_Car`.
+class _Transactions {
+  late int id;
+  late int trxType;
+  late String abrev;
+  @PrimaryKey()
+  late String trxNumber;
+  late int vehicleId;
+  late String make;
+  late String model;
+  late String color;
+  late int km;
+  late String fuelLevel;
+  late String locationName;
+  late String createdAt;
+  late String updatedAt;
+}
+
 

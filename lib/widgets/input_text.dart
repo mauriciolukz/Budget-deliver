@@ -8,6 +8,7 @@ class InputText extends StatelessWidget {
   final IconData? icon;
   final void Function(String text) onChanged;
   final String? Function(dynamic value) validator;
+  final TextEditingController? textEditingController;
 
   const InputText({
     Key? key,
@@ -16,6 +17,7 @@ class InputText extends StatelessWidget {
     this.obscureText = false,
     required this.onChanged,
     required this.validator,
+    this.textEditingController,
     this.icon,
   }) : super(key: key);
 
@@ -23,6 +25,7 @@ class InputText extends StatelessWidget {
   Widget build(BuildContext context) {
 
     return  TextFormField(
+      controller: textEditingController,
       keyboardType: keyboardType,
       obscureText: obscureText,
       onChanged: onChanged,

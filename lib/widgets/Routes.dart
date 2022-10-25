@@ -12,11 +12,11 @@ class Routes extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     List<Widget> myList = [
-      VehicleInformation(moduleName:moduleName,vehicle:this.vehicle),
-      VehicleInformation(moduleName:moduleName,vehicle:this.vehicle),
-      VehicleInformation(moduleName:moduleName,vehicle:this.vehicle),
-      VehicleInformation(moduleName:moduleName,vehicle:this.vehicle),
-      VehicleInformation(moduleName:moduleName,vehicle:this.vehicle)
+      VehicleInformation(idMenu:index,moduleName:moduleName,vehicle:this.vehicle),
+      VehicleInformation(idMenu:index,moduleName:moduleName,vehicle:this.vehicle),
+      VehicleInformation(idMenu:index,moduleName:moduleName,vehicle:this.vehicle),
+      VehicleInformation(idMenu:index,moduleName:moduleName,vehicle:this.vehicle),
+      VehicleInformation(idMenu:index,moduleName:moduleName,vehicle:this.vehicle)
     ];
     return myList[index];
   }

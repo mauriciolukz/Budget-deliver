@@ -1,12 +1,15 @@
+import 'dart:convert';
 import 'dart:ui';
 import 'package:budgetdeliver/app.dart';
 import 'package:budgetdeliver/view/vehicle_delivery_detail.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
+import 'package:quickalert/models/quickalert_type.dart';
+import 'package:quickalert/widgets/quickalert_dialog.dart';
 import 'package:realm/realm.dart';
+import '../service/transactions_api.dart';
 import '../utils/database_util.dart';
-import '../utils/global.color.dart';
 import '../utils/global.constants.dart';
 import '../widgets/button_stand.dart';
 import '../widgets/card_item.dart';
@@ -14,8 +17,9 @@ import '../widgets/dropdown_button_form_field_stand.dart';
 
 class VehicleInformation extends StatefulWidget {
   final String moduleName;
+  final int idMenu;
   final Vehicles vehicle;
-  const VehicleInformation({Key? key, required String this.moduleName, required this.vehicle}) : super(key: key);
+  const VehicleInformation({Key? key, required int this.idMenu,required String this.moduleName, required this.vehicle}) : super(key: key);
 
   @override
   State<VehicleInformation> createState() => _InfoVehicleState();
@@ -46,7 +50,7 @@ class _InfoVehicleState extends State<VehicleInformation> {
       return loadAdvise(Icons.find_in_page_outlined,'Buscar un vehiculo','Click boton parte inferior derecha');
     }
 
-    if(widget.vehicle == null){
+    if(widget.vehicle.mva == ''){
       return loadAdvise(Icons.cancel_outlined,'Vehiculo no encontrado','Volver a intentar');
     }
 
@@ -94,9 +98,30 @@ class _InfoVehicleState extends State<VehicleInformation> {
                       inputFormatters: [MaskTextInputFormatter(mask: '+### ########',filter: { "#": RegExp(r'[0-9]') },type: MaskAutoCompletionType.lazy)],
                     ),
                   ),
-                  ButtonStand(text:'Continuar',onPressed: (){
+                  ButtonStand(text:'Continuar',onPressed: () async {
+
+                    if(widget.vehicle.location == ''){
+                      QuickAlert.show(context: context,type: QuickAlertType.error,text: "El vehiculo no tiene locacion");
+                      //return;
+                    }
+
                     if (_formKey.currentState!.validate()) {
-                      Navigator.of(context).push(MaterialPageRoute(builder: (context) => VehicleDeliveryDetail(moduleName:widget.moduleName,vehicle:widget.vehicle)));
+                      Transactions? transaction = _databaseUtil.getTransactionByIdVehicle(widget.vehicle.id);
+
+                      if(transaction == null){
+                        await createTransaction(widget.vehicle.id,widget.idMenu + 1,widget.vehicle.isAvailable == true ? 'Out' : 'In',context,false).then((response) async {
+                          if (response.statusCode == 201) {
+                            var res = json.decode(response.body);
+                            var transactionId = await _databaseUtil.addTransactions(res);
+                            transaction = _databaseUtil.getTransactionByIdVehicle(widget.vehicle.id);
+                            Navigator.of(context).push(MaterialPageRoute(builder: (context) => VehicleDeliveryDetail(transactionId:transactionId,moduleName:widget.moduleName,vehicle:widget.vehicle)));
+                          }
+                        });
+                      }else{
+                        Navigator.of(context).push(MaterialPageRoute(builder: (context) => VehicleDeliveryDetail(transactionId:transaction!.id,moduleName:widget.moduleName,vehicle:widget.vehicle)));
+                      }
+
+
                     }
                   },width: 300,height: 50),
                 ],

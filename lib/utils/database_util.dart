@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:http/src/response.dart';
 import 'package:realm/src/realm_class.dart';
 import '../app.dart';
 import '../service/driver_api.dart';
@@ -21,6 +22,7 @@ class DatabaseUtil{
       _realm.deleteAll<Drivers>();
       _realm.deleteAll<FuelLevels>();
       _realm.deleteAll<Locations>();
+      _realm.deleteAll<Transactions>();
     });
   }
 
@@ -103,10 +105,12 @@ class DatabaseUtil{
   }
 
   Vehicles findVehicleByMVA(String mva) {
-
-    Vehicles vehicle = new Vehicles(0, "", "", "", "", "", "", 0, "", "", "", "", "", "", false);
-    return _realm.all<Vehicles>().query("mva == '$mva'").first;
-
+    try{
+      return _realm.all<Vehicles>().query("mva == '$mva'").first;
+    }
+    catch(e){
+      return new Vehicles(0, "", "", "", "", "", "", 0, "", "", "", "", "", "", false);
+    }
   }
 
   void addDrivers(driver) {
@@ -115,8 +119,29 @@ class DatabaseUtil{
     });
   }
 
+  int addTransactions(transaction) {
+    var id;
+    _realm.write(() {
+      id = _realm.add(Transactions(transaction['id'], transaction['trxType'], transaction['abrev'], transaction['trxNumber'], transaction['vehicleId'],transaction['make'], transaction['model'], transaction['color'], transaction['km'], transaction['fuelLevel'], transaction['locationName'], "", "")).id;
+    });
+    return id;
+  }
+
   RealmResults<Drivers> getAllDrivers() {
     return _realm.all<Drivers>();
+  }
+
+  RealmResults<Transactions> getAllTransactions() {
+    return _realm.all<Transactions>();
+  }
+
+  Transactions? getTransactionByIdVehicle(int vehicleId) {
+      try{
+        return _realm.all<Transactions>().query("vehicleId == $vehicleId").first;
+      }
+      catch(e){
+        return null;
+      }
   }
 
   void addFuellevels(fuellevel) {
@@ -147,6 +172,15 @@ class DatabaseUtil{
 
   RealmResults<ItemsMaster> getAllItemsMaster() {
     return _realm.all<ItemsMaster>();
+  }
+
+  updateTransactions(res) {
+
+    Transactions transactions = Transactions(res['id'], res['trxType'], res['abrev'], res['trxNumber'], res['vehicleId'], res['make'], res['model'], res['color'], res['km'], res['fuelLevel'], res['locationName'], "", "");
+    _realm.write(() {
+      _realm.add<Transactions>(transactions, update: true);
+    });
+
   }
 
 }

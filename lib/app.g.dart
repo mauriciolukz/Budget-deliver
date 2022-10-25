@@ -485,3 +485,129 @@ class ItemsMaster extends _ItemsMaster with RealmEntity, RealmObject {
     ]);
   }
 }
+
+class Transactions extends _Transactions with RealmEntity, RealmObject {
+  Transactions(
+    int id,
+    int trxType,
+    String abrev,
+    String trxNumber,
+    int vehicleId,
+    String make,
+    String model,
+    String color,
+    int km,
+    String fuelLevel,
+    String locationName,
+    String createdAt,
+    String updatedAt,
+  ) {
+    RealmObject.set(this, 'id', id);
+    RealmObject.set(this, 'trxType', trxType);
+    RealmObject.set(this, 'abrev', abrev);
+    RealmObject.set(this, 'trxNumber', trxNumber);
+    RealmObject.set(this, 'vehicleId', vehicleId);
+    RealmObject.set(this, 'make', make);
+    RealmObject.set(this, 'model', model);
+    RealmObject.set(this, 'color', color);
+    RealmObject.set(this, 'km', km);
+    RealmObject.set(this, 'fuelLevel', fuelLevel);
+    RealmObject.set(this, 'locationName', locationName);
+    RealmObject.set(this, 'createdAt', createdAt);
+    RealmObject.set(this, 'updatedAt', updatedAt);
+  }
+
+  Transactions._();
+
+  @override
+  int get id => RealmObject.get<int>(this, 'id') as int;
+  @override
+  set id(int value) => RealmObject.set(this, 'id', value);
+
+  @override
+  int get trxType => RealmObject.get<int>(this, 'trxType') as int;
+  @override
+  set trxType(int value) => RealmObject.set(this, 'trxType', value);
+
+  @override
+  String get abrev => RealmObject.get<String>(this, 'abrev') as String;
+  @override
+  set abrev(String value) => RealmObject.set(this, 'abrev', value);
+
+  @override
+  String get trxNumber => RealmObject.get<String>(this, 'trxNumber') as String;
+  @override
+  set trxNumber(String value) => throw RealmUnsupportedSetError();
+
+  @override
+  int get vehicleId => RealmObject.get<int>(this, 'vehicleId') as int;
+  @override
+  set vehicleId(int value) => RealmObject.set(this, 'vehicleId', value);
+
+  @override
+  String get make => RealmObject.get<String>(this, 'make') as String;
+  @override
+  set make(String value) => RealmObject.set(this, 'make', value);
+
+  @override
+  String get model => RealmObject.get<String>(this, 'model') as String;
+  @override
+  set model(String value) => RealmObject.set(this, 'model', value);
+
+  @override
+  String get color => RealmObject.get<String>(this, 'color') as String;
+  @override
+  set color(String value) => RealmObject.set(this, 'color', value);
+
+  @override
+  int get km => RealmObject.get<int>(this, 'km') as int;
+  @override
+  set km(int value) => RealmObject.set(this, 'km', value);
+
+  @override
+  String get fuelLevel => RealmObject.get<String>(this, 'fuelLevel') as String;
+  @override
+  set fuelLevel(String value) => RealmObject.set(this, 'fuelLevel', value);
+
+  @override
+  String get locationName =>
+      RealmObject.get<String>(this, 'locationName') as String;
+  @override
+  set locationName(String value) =>
+      RealmObject.set(this, 'locationName', value);
+
+  @override
+  String get createdAt => RealmObject.get<String>(this, 'createdAt') as String;
+  @override
+  set createdAt(String value) => RealmObject.set(this, 'createdAt', value);
+
+  @override
+  String get updatedAt => RealmObject.get<String>(this, 'updatedAt') as String;
+  @override
+  set updatedAt(String value) => RealmObject.set(this, 'updatedAt', value);
+
+  @override
+  Stream<RealmObjectChanges<Transactions>> get changes =>
+      RealmObject.getChanges<Transactions>(this);
+
+  static SchemaObject get schema => _schema ??= _initSchema();
+  static SchemaObject? _schema;
+  static SchemaObject _initSchema() {
+    RealmObject.registerFactory(Transactions._);
+    return const SchemaObject(Transactions, 'Transactions', [
+      SchemaProperty('id', RealmPropertyType.int),
+      SchemaProperty('trxType', RealmPropertyType.int),
+      SchemaProperty('abrev', RealmPropertyType.string),
+      SchemaProperty('trxNumber', RealmPropertyType.string, primaryKey: true),
+      SchemaProperty('vehicleId', RealmPropertyType.int),
+      SchemaProperty('make', RealmPropertyType.string),
+      SchemaProperty('model', RealmPropertyType.string),
+      SchemaProperty('color', RealmPropertyType.string),
+      SchemaProperty('km', RealmPropertyType.int),
+      SchemaProperty('fuelLevel', RealmPropertyType.string),
+      SchemaProperty('locationName', RealmPropertyType.string),
+      SchemaProperty('createdAt', RealmPropertyType.string),
+      SchemaProperty('updatedAt', RealmPropertyType.string),
+    ]);
+  }
+}

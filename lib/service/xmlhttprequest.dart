@@ -60,6 +60,30 @@ class XmlHttpRequest{
 
   }
 
+  Future<http.Response> put(String api, Map<String, dynamic> map,String mapHeader,BuildContext context, bool loadDialog,bool token) async {
+
+    await testConnectivity(context,loadDialog);
+
+    map["platform"] = 'app';
+    String baseUrl = "$path$api$mapHeader";
+
+    if(token){
+      token_jwt = await _authenticationClient.accessToken;
+      header["Authorization"] = "Bearer ${token_jwt}";
+    }
+
+    final response = await client.put(
+      Uri.parse(baseUrl),
+      headers: header,
+      body: jsonEncode(map),
+    ).timeout(Duration(seconds: 30)).then((value) => verifResponse(value,context,loadDialog,api));
+
+    return response;
+
+  }
+
+
+
   Future<http.Response> verifResponse(http.Response response,BuildContext context, bool loadDialog,api) async {
 
     if(loadDialog == true){
