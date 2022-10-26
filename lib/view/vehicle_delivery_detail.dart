@@ -64,6 +64,13 @@ class _VehicleDeliveryDetailState extends State<VehicleDeliveryDetail> {
   }
 
   @override
+  void dispose() {
+    // TODO: implement dispose
+    kmController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
