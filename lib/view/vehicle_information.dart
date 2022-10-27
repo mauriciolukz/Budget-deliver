@@ -109,7 +109,7 @@ class _InfoVehicleState extends State<VehicleInformation> {
                       Transactions? transaction = _databaseUtil.getTransactionByIdVehicle(widget.vehicle.id);
 
                       if(transaction == null){
-                        await createTransaction(widget.vehicle.id,widget.idMenu + 1,widget.vehicle.isAvailable == true ? 'Out' : 'In',context,false).then((response) async {
+                        await createTransaction(widget.vehicle.id,widget.idMenu,widget.vehicle.isAvailable == true ? 'Out' : 'In',context,false).then((response) async {
                           if (response.statusCode == 201) {
                             var res = json.decode(response.body);
                             var transactionId = await _databaseUtil.addTransactions(res);

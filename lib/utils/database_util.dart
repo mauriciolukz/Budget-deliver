@@ -15,9 +15,11 @@ class DatabaseUtil{
 
   DatabaseUtil(Realm this._realm);
 
-  cleanDatase(){
+  cleanDatase(bool skip){
     _realm.write(() {
-      _realm.deleteAll<Menu>();
+      if(!skip){
+        _realm.deleteAll<Menu>();
+      }
       _realm.deleteAll<Vehicles>();
       _realm.deleteAll<Drivers>();
       _realm.deleteAll<FuelLevels>();
@@ -41,6 +43,11 @@ class DatabaseUtil{
   String getNameMenuItemByIndex(int index) {
     var menu = _realm.all<Menu>();
     return menu[index].name;
+  }
+
+  int getIdMenuItemByIndex(int index) {
+    var menu = _realm.all<Menu>();
+    return menu[index].id;
   }
 
   addVehicles(vehicle) {

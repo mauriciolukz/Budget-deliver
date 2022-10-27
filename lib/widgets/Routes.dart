@@ -16,6 +16,9 @@ class Routes extends StatelessWidget {
       VehicleInformation(idMenu:index,moduleName:moduleName,vehicle:this.vehicle),
       VehicleInformation(idMenu:index,moduleName:moduleName,vehicle:this.vehicle),
       VehicleInformation(idMenu:index,moduleName:moduleName,vehicle:this.vehicle),
+      VehicleInformation(idMenu:index,moduleName:moduleName,vehicle:this.vehicle),
+      VehicleInformation(idMenu:index,moduleName:moduleName,vehicle:this.vehicle),
+      VehicleInformation(idMenu:index,moduleName:moduleName,vehicle:this.vehicle),
       VehicleInformation(idMenu:index,moduleName:moduleName,vehicle:this.vehicle)
     ];
     return myList[index];

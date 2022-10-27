@@ -4,8 +4,6 @@ import 'package:budgetdeliver/utils/global.constants.dart';
 import 'package:budgetdeliver/view/tire_check.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
-import 'package:quickalert/models/quickalert_type.dart';
-import 'package:quickalert/widgets/quickalert_dialog.dart';
 import 'package:realm/realm.dart';
 import '../service/transactions_api.dart';
 import '../utils/database_util.dart';

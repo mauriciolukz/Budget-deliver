@@ -5,11 +5,13 @@ import 'package:budgetdeliver/widgets/Routes.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import '../data/authentication_client.dart';
+import '../service/transactions_api.dart';
 import '../utils/database_util.dart';
 import '../utils/global.color.dart';
 import '../utils/global.constants.dart';
 import '../widgets/bottom_nav.dart';
 import '../widgets/button_stand.dart';
+import '../widgets/dialogs.dart';
 import 'login.view.dart';
 
 class HomeView extends StatefulWidget {
@@ -24,6 +26,7 @@ class HomeView extends StatefulWidget {
 class _HomeViewState extends State<HomeView> {
 
   int index = 0;
+  int indexMenu = 0;
   String moduleName = "";
   BNavigator ?bNavigator;
   final _authenticationClient = GetIt.instance<AuthenticationClient>();
@@ -32,6 +35,7 @@ class _HomeViewState extends State<HomeView> {
   late TextEditingController mvaController;
   String MVA = '';
   late Vehicles vehicle = Vehicles(0, "", "", "", "", "", "", 0, "", "", "", "", "", "", false);
+  int showBarItem = -1;
 
   @override
   void initState() {
@@ -42,6 +46,7 @@ class _HomeViewState extends State<HomeView> {
                       index = i;
                     });
                   },
+                  showBarItem:showBarItem
                 );
 
     super.initState();
@@ -63,10 +68,11 @@ class _HomeViewState extends State<HomeView> {
   Widget build(BuildContext context) {
 
     moduleName = MVA == '' ? '' : _databaseUtil.getNameMenuItemByIndex(index);
+    indexMenu = _databaseUtil.getIdMenuItemByIndex(index);
 
     return  Scaffold(
       appBar: _AppBar(),
-      body: Routes(index: index, moduleName:moduleName, vehicle:this.vehicle),
+      body: Routes(index: indexMenu, moduleName:moduleName, vehicle:this.vehicle),
       floatingActionButton: _floatingActionButton(),
       bottomNavigationBar: _bottomNavigationBar(),
     );
@@ -87,9 +93,10 @@ class _HomeViewState extends State<HomeView> {
           style: style,
           label: const Text(''),
           onPressed: () async {
-            setState(() {
-              index = 6;
-            });
+            ProgressDialog.show(context);
+            await _databaseUtil.cleanDatase(true);
+            await _databaseUtil.PullData(context);
+            ProgressDialog.dissmiss(context);
           },
           icon: const Icon(Icons.refresh),
         ),
@@ -98,7 +105,7 @@ class _HomeViewState extends State<HomeView> {
           label: Text('$username'),
           onPressed: () async {
             await _authenticationClient.signOut();
-            await _databaseUtil.cleanDatase();
+            await _databaseUtil.cleanDatase(false);
             Navigator.pushNamedAndRemoveUntil(context,LoginView.routeName,(_) => false);
           },
           icon: const Icon(Icons.exit_to_app),
@@ -168,15 +175,24 @@ class _HomeViewState extends State<HomeView> {
           if( MVA == ''){
             final mva = await openDialog();
             if (mva == null || (mva.isEmpty)) return;
+
             setState((){
               this.MVA = mva;
               this.vehicle = _databaseUtil.findVehicleByMVA(this.MVA);
-              print(this.vehicle);
             });
+            /*
+            await findTransactionByVehicle("1",context,false).then((response) async {
+              if (response.statusCode == 200) {
+                this.vehicle = _databaseUtil.findVehicleByMVA(this.MVA);
+              }
+            });*/
+
           }else{
             setState((){
               this.MVA = '';
               vehicle = new Vehicles(0, "", "", "", "", "", "", 0, "", "", "", "", "", "", false);
+              moduleName = "";
+              indexMenu = 0;
             });
           }
         },

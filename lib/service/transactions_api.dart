@@ -18,3 +18,13 @@ Future<http.Response> updateTransaction(String transactionId,int km,String fuelL
   return response;
 
 }
+
+Future<http.Response> findTransactionByVehicle(String vehicleId,BuildContext context, bool loadDialog) async {
+
+  var request = XmlHttpRequest();
+  final response = await request.get("${vehicleId}/open-transaction", {},context,loadDialog,true);
+  print(response);
+  return response;
+
+}
+

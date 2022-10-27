@@ -16,13 +16,13 @@ class XmlHttpRequest{
 
   String path = GlobalConstants.url;
   final _authenticationClient = GetIt.instance<AuthenticationClient>();
-  Map<String, String> header = {
-    'Content-Type': 'application/json; charset=UTF-8',
-  };
+  Map<String, String> header = {'Content-Type': 'application/json; charset=UTF-8'};
   late final token_jwt;
   final client = Client();
 
    Future<http.Response> post(String api, Map<String, dynamic> map,BuildContext context, bool loadDialog,bool token) async {
+
+     var response;
 
      await testConnectivity(context,loadDialog);
 
@@ -34,17 +34,22 @@ class XmlHttpRequest{
       header["Authorization"] = "Bearer ${token_jwt}";
     }
 
-    final response = await client.post(
-      Uri.parse(baseUrl),
-      headers: header,
-      body: jsonEncode(map),
-    ).timeout(Duration(seconds: 30)).then((value) => verifResponse(value,context,loadDialog,api));
+    try{
+        response = await client.post(
+        Uri.parse(baseUrl),
+        headers: header,
+        body: jsonEncode(map),
+      ).timeout(Duration(seconds: 30)).then((value) => verifResponse(value,context,loadDialog,api));
+    }catch(e){
+      QuickAlert.show(context: context,type: QuickAlertType.error,text: e.toString());
+    }
 
-    return response;
+     return response;
 
   }
 
   Future<http.Response> get(String api, Map<String, dynamic> map,BuildContext context, bool loadDialog,bool token) async {
+    var response;
 
     await testConnectivity(context,loadDialog);
 
@@ -55,12 +60,17 @@ class XmlHttpRequest{
       header["Authorization"] = "Bearer ${token_jwt}";
     }
 
-    final response = await client.get(url,headers: header).timeout(Duration(seconds: 30)).then((value) => verifResponse(value,context,loadDialog,api));
+    try{
+       response = await client.get(url,headers: header).timeout(Duration(seconds: 30)).then((value) => verifResponse(value,context,loadDialog,api));
+    }catch(e){
+      QuickAlert.show(context: context,type: QuickAlertType.error,text: e.toString());
+    }
     return response;
 
   }
 
   Future<http.Response> put(String api, Map<String, dynamic> map,String mapHeader,BuildContext context, bool loadDialog,bool token) async {
+    var response;
 
     await testConnectivity(context,loadDialog);
 
@@ -72,11 +82,15 @@ class XmlHttpRequest{
       header["Authorization"] = "Bearer ${token_jwt}";
     }
 
-    final response = await client.put(
-      Uri.parse(baseUrl),
-      headers: header,
-      body: jsonEncode(map),
-    ).timeout(Duration(seconds: 30)).then((value) => verifResponse(value,context,loadDialog,api));
+    try{
+        response = await client.put(
+        Uri.parse(baseUrl),
+        headers: header,
+        body: jsonEncode(map),
+      ).timeout(Duration(seconds: 30)).then((value) => verifResponse(value,context,loadDialog,api));
+    }catch(e){
+      QuickAlert.show(context: context,type: QuickAlertType.error,text: e.toString());
+    }
 
     return response;
 
