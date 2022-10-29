@@ -2,6 +2,8 @@ import 'package:circular/circular.dart';
 import 'package:flip_card/flip_card_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:lite_rolling_switch/lite_rolling_switch.dart';
+import 'package:quickalert/models/quickalert_type.dart';
+import 'package:quickalert/widgets/quickalert_dialog.dart';
 import '../utils/global.color.dart';
 import '../utils/global.constants.dart';
 import '../widgets/button_stand.dart';
@@ -25,6 +27,7 @@ class _TireCheckState extends State<TireCheck> {
   Object? valueutilLife;
   late int value2 = 0;
   var valueuFlip;
+  var showTire = false;
   GlobalKey<FlipCardState> cardKey = GlobalKey<FlipCardState>();
   GlobalKey<FlipCardState> cardKey2 = GlobalKey<FlipCardState>();
    FlipCardController _controller = FlipCardController();
@@ -60,23 +63,34 @@ class _TireCheckState extends State<TireCheck> {
         ],
         backgroundColor: GlobalColors.backgroudColor,
       ),
-      body:Stack(
-        children: <Widget>[
-          CircleAvatar(
-            radius: 500.0,
-            backgroundColor: Colors.transparent,
-            backgroundImage: AssetImage('assets/images/ring-lujo.png'),
+      body:Container(
+        decoration: BoxDecoration(
+          image:DecorationImage(
+            image: AssetImage('assets/images/car_topview.png'),
+            //fit: BoxFit.fill
           ),
-          builderr(),
-        ],
+        ),
+        child: Stack(
+          children: [
+            builderr2(210.0,150.0,0.0,Icons.info,Colors.red),
+            builderr2(210.0,0.0,150.0,Icons.info,Colors.red),
+            builderr2(600.0,150.0,0.0,Icons.info,Colors.red),
+            builderr2(600.0,0.0,150.0,Icons.info,Colors.red),
+            builderr2(700.0,0.0,285.0,Icons.info,Colors.red),
+            Positioned(
+                top: 10.00,
+                right: 10.00,
+                child: showTire == true ? builderr() : Card()
+            )
+          ],
+        ),
       )
     );
   }
 
-  Center builderr(){
+   builderr(){
     return
-      Center(
-        child: Card(
+      Card(
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(15.0),
           ),
@@ -93,7 +107,11 @@ class _TireCheckState extends State<TireCheck> {
                       Expanded(
                           child: Text(value2.toString() + " PSI",textAlign: TextAlign.center,style: TextStyle(fontSize: 30))
                       ),
-                      ButtonStand(text:'Guardar',onPressed: () { },width: 100,height: 40),
+                      ButtonStand(text:'Guardar',onPressed: () {
+                        setState(() {
+                          showTire = false;
+                        });
+                      },width: 100,height: 40),
                     ],
                   ),
                   CircularSlider(
@@ -207,9 +225,35 @@ class _TireCheckState extends State<TireCheck> {
               ),
             ),
           ),
-        ),
-      );
+        );
   }
 
+  Positioned builderr2(double al,double anl,double anr,IconData icon,Color color){
+
+      if(anl == 0.0){
+        return Positioned(
+          top: al,
+          right: anr,
+          child: InkWell(onTap: (){
+            setState(() {
+              showTire = true;
+            });
+            //QuickAlert.show(context: context,type: QuickAlertType.error,text: "incrustar ventana");
+          },child: Icon(icon,size: 40, color: color)),
+        );
+      }else{
+        return Positioned(
+          top: al,
+          left: anl,
+          child: InkWell(onTap: (){
+            setState(() {
+              showTire = true;
+            });
+            //QuickAlert.show(context: context,type: QuickAlertType.error,text: "incrustar ventana");
+          },child: Icon(icon,size: 40, color: color)),
+        );
+      }
+
+  }
 
 }
