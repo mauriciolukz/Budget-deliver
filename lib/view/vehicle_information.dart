@@ -29,24 +29,42 @@ class _InfoVehicleState extends State<VehicleInformation> {
   final _formKey = GlobalKey<FormState>();
   late final bool typeCheck;
   late List driversList = [];
+  late List driversPhoneList = [];
   Object? valueDriver = null;
+  Object? valuePhoneDriver = null;
   final _databaseUtil = GetIt.instance<DatabaseUtil>();
+  late RealmResults<Drivers> allDrivers;
+  final phoneController = TextEditingController();
 
   @override
   void initState() {
     // TODO: implement initState
     setState(() {typeCheck = widget.vehicle.isAvailable;});
-    RealmResults<Drivers> allDrivers = _databaseUtil.getAllDrivers();
+    allDrivers = _databaseUtil.getAllDrivers();
     allDrivers.forEach((driver) {
-      setState(() {driversList.add(driver.fullName);});
+      setState(() {
+        driversList.add(driver.fullName);
+        driversPhoneList.add(driver.phone1);
+      });
     });
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    phoneController.dispose();
+    // TODO: implement dispose
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
 
     if(widget.moduleName == ''){
+      setState(() {
+        valueDriver = null;
+        phoneController.text = '';
+      });
       return loadAdvise(Icons.find_in_page_outlined,'Buscar un vehiculo','Click boton parte inferior derecha');
     }
 
@@ -84,12 +102,19 @@ class _InfoVehicleState extends State<VehicleInformation> {
                     DropDownButtonFormFieldStand(
                         listParam: driversList,
                         textValidator :GlobalConstants.requiredField,
-                        onChanged: (value) => valueDriver = value,
+                        onChanged: (value) {
+                          valueDriver = value;
+                          setState(() {
+                            valuePhoneDriver = driversPhoneList[driversList.indexOf(value)];
+                            phoneController.text = valuePhoneDriver.toString();
+                          });
+                        },
                         setValueDrop:valueDriver
                     )
                   ),
                   filterCard(Icons.call,Text(style: TextStyle(fontWeight: FontWeight.bold),'Celular'),
                     TextFormField(
+                      controller: phoneController,
                       validator: (value) => value!.isEmpty || value == null ? GlobalConstants.requiredField: null,
                       keyboardType: TextInputType.number,
                       decoration: InputDecoration(

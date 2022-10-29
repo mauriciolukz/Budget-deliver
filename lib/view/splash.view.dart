@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:budgetdeliver/data/authentication_client.dart';
 import 'package:budgetdeliver/utils/global.color.dart';
 import 'package:budgetdeliver/utils/global.constants.dart';
+import 'package:budgetdeliver/view/tire_check.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'home.view.dart';
@@ -51,7 +52,8 @@ class _SplashViewState extends State<SplashView> {
   }
 
   Future<void> _checkLogin() async {
-
+    Navigator.pushNamedAndRemoveUntil(context,TireCheck.routeName,(_) => false);
+/*
     final token = await _authenticationClient.accessToken;
 
     if(token == null){
@@ -59,7 +61,7 @@ class _SplashViewState extends State<SplashView> {
       return;
     }
     Navigator.pushNamedAndRemoveUntil(context,HomeView.routeName,(_) => false);
-
+*/
   }
 
 }

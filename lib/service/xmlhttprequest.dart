@@ -41,6 +41,9 @@ class XmlHttpRequest{
         body: jsonEncode(map),
       ).timeout(Duration(seconds: 30)).then((value) => verifResponse(value,context,loadDialog,api));
     }catch(e){
+      if(loadDialog == true){
+        await ProgressDialog.dissmiss(context);
+      }
       QuickAlert.show(context: context,type: QuickAlertType.error,text: e.toString());
     }
 
@@ -63,6 +66,9 @@ class XmlHttpRequest{
     try{
        response = await client.get(url,headers: header).timeout(Duration(seconds: 30)).then((value) => verifResponse(value,context,loadDialog,api));
     }catch(e){
+      if(loadDialog == true){
+        await ProgressDialog.dissmiss(context);
+      }
       QuickAlert.show(context: context,type: QuickAlertType.error,text: e.toString());
     }
     return response;
@@ -89,6 +95,9 @@ class XmlHttpRequest{
         body: jsonEncode(map),
       ).timeout(Duration(seconds: 30)).then((value) => verifResponse(value,context,loadDialog,api));
     }catch(e){
+      if(loadDialog == true){
+        await ProgressDialog.dissmiss(context);
+      }
       QuickAlert.show(context: context,type: QuickAlertType.error,text: e.toString());
     }
 
@@ -107,7 +116,6 @@ class XmlHttpRequest{
     try {
 
       if (response.statusCode >= 400) {
-        print("entroooo ${response.statusCode} ${api}");
         var res = json.decode(response.body);
         Error error = Error.fromJson(res);
         QuickAlert.show(context: context,type: QuickAlertType.error,text: error.message);

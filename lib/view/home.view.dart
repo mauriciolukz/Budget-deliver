@@ -179,20 +179,13 @@ class _HomeViewState extends State<HomeView> {
             setState((){
               this.MVA = mva;
               this.vehicle = _databaseUtil.findVehicleByMVA(this.MVA);
+              index = 0;
             });
-            /*
-            await findTransactionByVehicle("1",context,false).then((response) async {
-              if (response.statusCode == 200) {
-                this.vehicle = _databaseUtil.findVehicleByMVA(this.MVA);
-              }
-            });*/
 
           }else{
             setState((){
               this.MVA = '';
               vehicle = new Vehicles(0, "", "", "", "", "", "", 0, "", "", "", "", "", "", false);
-              moduleName = "";
-              indexMenu = 0;
             });
           }
         },

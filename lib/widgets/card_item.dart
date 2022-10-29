@@ -8,7 +8,7 @@ class CardItem extends StatelessWidget {
   final description;
   final element;
 
-  const CardItem({Key? key, required this.icon, required this.description,this.element}) : super(key: key);
+  const CardItem({Key? key, this.icon, required this.description,this.element}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -28,7 +28,7 @@ class CardItem extends StatelessWidget {
               //contentPadding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
               title: description,
               subtitle: element,
-              leading: Container(
+              leading: (icon != null) ? Container(
                 padding: EdgeInsets.only(right: 12.0),
                 decoration: new BoxDecoration(
                     border: new Border(
@@ -36,7 +36,7 @@ class CardItem extends StatelessWidget {
                     )
                 ),
                 child: Icon(icon, color: GlobalColors.backgroudColor,size: 40),
-              ),
+              ) : null,
             )
         )
     );

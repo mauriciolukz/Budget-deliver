@@ -3,6 +3,7 @@ import 'package:budgetdeliver/utils/global.color.dart';
 import 'package:budgetdeliver/view/home.view.dart';
 import 'package:budgetdeliver/view/login.view.dart';
 import 'package:budgetdeliver/view/splash.view.dart';
+import 'package:budgetdeliver/view/tire_check.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -16,6 +17,7 @@ class App extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
+
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Budget',
@@ -23,6 +25,7 @@ class App extends StatelessWidget {
       routes: {
         LoginView.routeName: (context) => LoginView(),
         HomeView.routeName: (context) => HomeView(),
+        TireCheck.routeName: (context) => TireCheck(),
       },
     );
   }
