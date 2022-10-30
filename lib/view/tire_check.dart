@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:circular/circular.dart';
 import 'package:flip_card/flip_card_controller.dart';
 import 'package:flutter/material.dart';
@@ -31,10 +33,18 @@ class _TireCheckState extends State<TireCheck> {
   GlobalKey<FlipCardState> cardKey = GlobalKey<FlipCardState>();
   GlobalKey<FlipCardState> cardKey2 = GlobalKey<FlipCardState>();
    FlipCardController _controller = FlipCardController();
+   Color colorIconTire = Colors.red;
+  late Timer mytimer;
+  String descTireGlobal = "";
   @override
   void initState() {
     _controller.toggleCard();
     for (var i = 5; i < 11; i++) {utilLife.add((i * 10).toString() + '%');}
+    mytimer =  Timer.periodic(Duration(seconds: 1), (timer) {
+      setState(() {
+        colorIconTire = colorIconTire.value == 4294198070 ? Colors.grey : Colors.red;
+      });
+    });
     // TODO: implement initState
     super.initState();
   }
@@ -72,13 +82,13 @@ class _TireCheckState extends State<TireCheck> {
         ),
         child: Stack(
           children: [
-            builderr2(210.0,150.0,0.0,Icons.info,Colors.red),
-            builderr2(210.0,0.0,150.0,Icons.info,Colors.red),
-            builderr2(600.0,150.0,0.0,Icons.info,Colors.red),
-            builderr2(600.0,0.0,150.0,Icons.info,Colors.red),
-            builderr2(700.0,0.0,285.0,Icons.info,Colors.red),
+            builderr2("D-L-1",210.0,150.0,0.0,Icons.info,colorIconTire),
+            builderr2("D-R-2",210.0,0.0,150.0,Icons.info,colorIconTire),
+            builderr2("T-L-3",600.0,150.0,0.0,Icons.info,colorIconTire),
+            builderr2("T-R-4",600.0,0.0,150.0,Icons.info,colorIconTire),
+            builderr2("R-5",665.0,0.0,285.0,Icons.info,colorIconTire),
             Positioned(
-                top: 10.00,
+                top: 5.00,
                 right: 10.00,
                 child: showTire == true ? builderr() : Card()
             )
@@ -105,7 +115,7 @@ class _TireCheckState extends State<TireCheck> {
                   Row(
                     children: [
                       Expanded(
-                          child: Text(value2.toString() + " PSI",textAlign: TextAlign.center,style: TextStyle(fontSize: 30))
+                          child: Text(value2.toString() + " PSI ${descTireGlobal}",textAlign: TextAlign.center,style: TextStyle(fontSize: 30))
                       ),
                       ButtonStand(text:'Guardar',onPressed: () {
                         setState(() {
@@ -228,8 +238,8 @@ class _TireCheckState extends State<TireCheck> {
         );
   }
 
-  Positioned builderr2(double al,double anl,double anr,IconData icon,Color color){
-
+  Positioned builderr2(String descTire,double al,double anl,double anr,IconData icon,Color color){
+      //resetTire(descTire);
       if(anl == 0.0){
         return Positioned(
           top: al,
@@ -237,8 +247,9 @@ class _TireCheckState extends State<TireCheck> {
           child: InkWell(onTap: (){
             setState(() {
               showTire = true;
+              descTireGlobal = descTire;
+              mytimer.cancel();
             });
-            //QuickAlert.show(context: context,type: QuickAlertType.error,text: "incrustar ventana");
           },child: Icon(icon,size: 40, color: color)),
         );
       }else{
@@ -248,12 +259,19 @@ class _TireCheckState extends State<TireCheck> {
           child: InkWell(onTap: (){
             setState(() {
               showTire = true;
+              descTireGlobal = descTire;
+              mytimer.cancel();
             });
-            //QuickAlert.show(context: context,type: QuickAlertType.error,text: "incrustar ventana");
           },child: Icon(icon,size: 40, color: color)),
         );
       }
 
+  }
+
+  void resetTire(String descTire) {
+    setState(() {
+      descTireGlobal = descTire;
+    });
   }
 
 }
