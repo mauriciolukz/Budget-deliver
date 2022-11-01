@@ -1,11 +1,13 @@
 import 'dart:async';
 
+import 'package:budgetdeliver/view/car_parts.dart';
 import 'package:circular/circular.dart';
 import 'package:flip_card/flip_card_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:lite_rolling_switch/lite_rolling_switch.dart';
 import 'package:quickalert/models/quickalert_type.dart';
 import 'package:quickalert/widgets/quickalert_dialog.dart';
+import '../app.dart';
 import '../utils/global.color.dart';
 import '../utils/global.constants.dart';
 import '../widgets/button_stand.dart';
@@ -94,7 +96,8 @@ class _TireCheckState extends State<TireCheck> {
             )
           ],
         ),
-      )
+      ),
+      floatingActionButton: _floatingActionButton() ,
     );
   }
 
@@ -272,6 +275,19 @@ class _TireCheckState extends State<TireCheck> {
     setState(() {
       descTireGlobal = descTire;
     });
+  }
+
+  _floatingActionButton() {
+
+    return FloatingActionButton.extended(
+      elevation: 20,
+      onPressed: ()  {
+        Navigator.of(context).push(MaterialPageRoute(builder: (context) => CartParts()));
+      },
+      label: Text("Continuar"),
+      icon: Icon(Icons.navigate_next),
+      backgroundColor: GlobalColors.backgroudColor,
+    );
   }
 
 }

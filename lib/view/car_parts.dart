@@ -13,9 +13,9 @@ import '../widgets/card_item.dart';
 import '../widgets/dropdown_button_form_field_stand.dart';
 
 class CartParts extends StatefulWidget {
-  final String moduleName;
-  final Vehicles vehicle;
-  const CartParts({Key? key, required String this.moduleName, required this.vehicle}) : super(key: key);
+  //final String moduleName;
+  //final Vehicles vehicle;
+  const CartParts({Key? key/*, required String this.moduleName, required this.vehicle*/}) : super(key: key);
 
   @override
   State<CartParts> createState() => _CartPartsState();
@@ -38,7 +38,7 @@ class _CartPartsState extends State<CartParts> {
   void initState() {
 
     allItemsMaster = _databaseUtil.getAllItemsMaster();
-    WidgetsBinding.instance.addPostFrameCallback((_) async {
+    WidgetsBinding.instance.addPostFrameCallback((_) async {/*
       await getVehiclesByMVA(context, false, widget.vehicle.mva).then((response) {
         confItemsMaster = json.decode(response.body)["_items"];
         confItemsMaster.forEach((confItem) {
@@ -53,7 +53,7 @@ class _CartPartsState extends State<CartParts> {
 
         });
 
-      });
+      });*/
     });
 
     selector = List.generate(allItemsMaster.length, (i) => List<dynamic>.generate(3, (j) => allItemsMaster[i].description));

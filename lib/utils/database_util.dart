@@ -24,6 +24,7 @@ class DatabaseUtil{
       _realm.deleteAll<Drivers>();
       _realm.deleteAll<FuelLevels>();
       _realm.deleteAll<Locations>();
+      _realm.deleteAll<ItemsMaster>();
       _realm.deleteAll<Transactions>();
     });
   }
