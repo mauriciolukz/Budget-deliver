@@ -21,7 +21,8 @@ class App extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Budget',
-      home:  SplashView(),
+      home:  TireCheck(),
+      //home:  SplashView(),
       routes: {
         LoginView.routeName: (context) => LoginView(),
         HomeView.routeName: (context) => HomeView(),

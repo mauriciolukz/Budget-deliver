@@ -1,18 +1,11 @@
 import 'dart:async';
 
 import 'package:budgetdeliver/view/car_parts.dart';
-import 'package:circular/circular.dart';
 import 'package:flip_card/flip_card_controller.dart';
 import 'package:flutter/material.dart';
-import 'package:lite_rolling_switch/lite_rolling_switch.dart';
-import 'package:quickalert/models/quickalert_type.dart';
-import 'package:quickalert/widgets/quickalert_dialog.dart';
-import '../app.dart';
 import '../utils/global.color.dart';
-import '../utils/global.constants.dart';
-import '../widgets/button_stand.dart';
-import '../widgets/dropdown_button_form_field_stand.dart';
 import 'package:flip_card/flip_card.dart';
+import '../widgets/wheels.dart';
 
 class TireCheck extends StatefulWidget {
   static const routeName = 'TireCheck';
@@ -24,25 +17,22 @@ class TireCheck extends StatefulWidget {
 }
 
 class _TireCheckState extends State<TireCheck> {
-  late List fuelLevels = ["30 psi","36 psi","42 psi"];
-  Object? valueFuelLevel;
-  var selector;
-  late List utilLife = [];
-  Object? valueutilLife;
-  late int value2 = 0;
-  var valueuFlip;
-  var showTire = false;
-  GlobalKey<FlipCardState> cardKey = GlobalKey<FlipCardState>();
-  GlobalKey<FlipCardState> cardKey2 = GlobalKey<FlipCardState>();
-   FlipCardController _controller = FlipCardController();
+
+  var orientation,size,height,width;
+  var showModalTire = false;
+  //GlobalKey<FlipCardState> cardKey = GlobalKey<FlipCardState>();
+  //GlobalKey<FlipCardState> cardKey2 = GlobalKey<FlipCardState>();
+   //FlipCardController _controller = FlipCardController();
    Color colorIconTire = Colors.red;
-  late Timer mytimer;
+  late Timer myTimer;
   String descTireGlobal = "";
+  String tyrePressureLevel = "";
+  bool isIron = false;
+
   @override
   void initState() {
-    _controller.toggleCard();
-    for (var i = 5; i < 11; i++) {utilLife.add((i * 10).toString() + '%');}
-    mytimer =  Timer.periodic(Duration(seconds: 1), (timer) {
+    //_controller.toggleCard();
+    myTimer =  Timer.periodic(Duration(seconds: 1), (timer) {
       setState(() {
         colorIconTire = colorIconTire.value == 4294198070 ? Colors.grey : Colors.red;
       });
@@ -53,6 +43,11 @@ class _TireCheckState extends State<TireCheck> {
 
   @override
   Widget build(BuildContext context) {
+
+    size = MediaQuery.of(context).size;
+    height = size.height;
+    width = size.width;
+    orientation = MediaQuery.of(context).orientation;
     //cardKey.currentState?.toggleCard();
     //cardKey2.currentState?.toggleCard();
     //setState(() {
@@ -79,20 +74,50 @@ class _TireCheckState extends State<TireCheck> {
         decoration: BoxDecoration(
           image:DecorationImage(
             image: AssetImage('assets/images/car_topview.png'),
-            //fit: BoxFit.fill
+            fit: BoxFit.scaleDown
           ),
         ),
         child: Stack(
           children: [
-            builderr2("D-L-1",210.0,150.0,0.0,Icons.info,colorIconTire),
-            builderr2("D-R-2",210.0,0.0,150.0,Icons.info,colorIconTire),
-            builderr2("T-L-3",600.0,150.0,0.0,Icons.info,colorIconTire),
-            builderr2("T-R-4",600.0,0.0,150.0,Icons.info,colorIconTire),
-            builderr2("R-5",665.0,0.0,285.0,Icons.info,colorIconTire),
+            builderr2("DELANTERA-IZQUIERDA-1",height /(orientation == Orientation.portrait ? 4.5 : 8),width /(orientation == Orientation.portrait ? 4 : 2.7),0.0,Icons.info,colorIconTire),
+            builderr2("DELANTERA-DERECHA-2",height /(orientation == Orientation.portrait ? 4.5 : 8),0.0,width /(orientation == Orientation.portrait ? 4 :  2.7),Icons.info,colorIconTire),
+            builderr2("TRASERA-IZQUIERDA-3",height /1.50,width /(orientation == Orientation.portrait ? 4 :  2.7),0.0,Icons.info,colorIconTire),
+            builderr2("TRASERA-DERECHA-4",height /1.50,0.0,width /(orientation == Orientation.portrait ? 4 :  2.7),Icons.info,colorIconTire),
+            builderr2("REPUESTO-5",height /1.30,0.0,width /2.1,Icons.info,colorIconTire),
             Positioned(
                 top: 5.00,
                 right: 10.00,
-                child: showTire == true ? builderr() : Card()
+                child: showModalTire == true ?
+                Wheels(
+                  descTireGlobal:  descTireGlobal,
+                  tyrePressureLevelText : tyrePressureLevel,
+                  isIron : isIron,
+                  onPressedSave: (){
+                    setState(() {
+                      showModalTire = false;
+                    });
+                  },
+                  onChangedFlip_rimType: (value){
+                     setState(() {
+                        isIron = value;
+                     });
+                  },
+                  onChangedTyreLife: (value){
+
+                  },
+                  onChangedRimMarkCondition: (value){
+
+                  },
+                  onChangedRimPainting: (value){
+
+                  },
+                  onDrag_tyrePressureLevel: (value){
+                    setState(() {
+                      tyrePressureLevel = value.toString();
+                    });
+                  },
+                ) :
+                Card()
             )
           ],
         ),
@@ -101,157 +126,16 @@ class _TireCheckState extends State<TireCheck> {
     );
   }
 
-   builderr(){
-    return
-      Card(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(15.0),
-          ),
-          elevation: 40,
-          child: SizedBox(
-            width: 330,
-            height: 400,
-            child: Padding(
-              padding: const EdgeInsets.all(20.0),
-              child: Column(
-                children: [
-                  Row(
-                    children: [
-                      Expanded(
-                          child: Text(value2.toString() + " PSI ${descTireGlobal}",textAlign: TextAlign.center,style: TextStyle(fontSize: 30))
-                      ),
-                      ButtonStand(text:'Guardar',onPressed: () {
-                        setState(() {
-                          showTire = false;
-                        });
-                      },width: 100,height: 40),
-                    ],
-                  ),
-                  CircularSlider(
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(10),
-                    ),
-                    maxValue: 100,
-                    radius:100,
-                    child:
-                    CircleAvatar(
-                      backgroundColor: Colors.black,
-                      radius: 58.0,
-                      child: CircleAvatar(
-                          backgroundColor: Colors.white,
-                        radius: 35.0,
-                          //child: null
-                          child:
-                          ClipOval(
-                            child: SizedBox.fromSize(
-                              size: Size.fromRadius(80), // Image radius
-                              child:
-                              FlipCard(
-                                //key: key,
-                                  //controller:_controller,
-                                onFlipDone: (statuss) {
-                                  setState(() {
-                                    valueuFlip = statuss;
-                                  });
-                                },
-                                //controller: _controller,
-                                fill: Fill.fillBack, // Fill the back side of the card to make in the same size as the front.
-                                direction: FlipDirection.HORIZONTAL, //
-                                front: Container(
-                                  child: Image.asset('assets/images/ring-lujo.png',fit: BoxFit.contain),
-                                ),
-                                back: Container(
-                                  child: Image.asset('assets/images/ring-hierro.png',fit: BoxFit.contain),
-                                ),
-                              ),
-                            ),
-                          )
-                      ),
-                    ),
-                    color: Color(0xFF57F17),
-                    sliderColor: Color(0xFFF44336),
-                    unSelectedColor: Color(0xFF00C853),
-                    onDrag: (value) {
-                      setState(() {
-                        value2 = value;
-                      });
-                    },
-                  ),
-                  Row(
-                    children: [
-                      Expanded(
-                        child:  DropDownButtonFormFieldStand(
-                        listParam: utilLife,
-                        textValidator :GlobalConstants.requiredField,
-                        onChanged: (value) => valueutilLife = value,
-                        setValueDrop:valueutilLife
-                        ),
-                      ),
-                      Expanded(
-                        child: Column(
-                          children: [
-                            LiteRollingSwitch(
-                              value: true,
-                              textOn: 'marca',
-                              textOff: 'marca',
-                              colorOn: Colors.green,
-                              colorOff: Colors.red,
-                              iconOn: Icons.done,
-                              iconOff: Icons.phonelink_erase_rounded,
-                              textSize: 16.0,
-                              onChanged: (bool state) {
-                                selector = state;
-                                setState(() {
-                                  selector;
-                                });
-                              }, onTap: (){}, onDoubleTap: (){}, onSwipe: (){},
-                            ),
-                            SizedBox(
-                              height: 10,
-                            ),
-                            if (valueuFlip == true)
-                              LiteRollingSwitch(
-                                value: true,
-                                textOn: 'pintado',
-                                textOff: 'no pintado',
-                                colorOn: Colors.green,
-                                colorOff: Colors.red,
-                                iconOn: Icons.done,
-                                iconOff: Icons.phonelink_erase_rounded,
-                                textSize: 16.0,
-                                onChanged: (bool state) {
-                                  selector = state;
-                                  setState(() {
-                                  selector;
-                                  });
-                                }, onTap: (){}, onDoubleTap: (){}, onSwipe: (){},
-                              ),
-
-                          ],
-                        )
-                      ),
-
-                    ],
-                  ),
-
-                ],
-              ),
-            ),
-          ),
-        );
-  }
-
   Positioned builderr2(String descTire,double al,double anl,double anr,IconData icon,Color color){
-      //resetTire(descTire);
       if(anl == 0.0){
         return Positioned(
           top: al,
           right: anr,
           child: InkWell(onTap: (){
             setState(() {
-              showTire = true;
+              showModalTire = true;
               descTireGlobal = descTire;
-              mytimer.cancel();
+              myTimer.cancel();
             });
           },child: Icon(icon,size: 40, color: color)),
         );
@@ -261,20 +145,14 @@ class _TireCheckState extends State<TireCheck> {
           left: anl,
           child: InkWell(onTap: (){
             setState(() {
-              showTire = true;
+              showModalTire = true;
               descTireGlobal = descTire;
-              mytimer.cancel();
+              myTimer.cancel();
             });
           },child: Icon(icon,size: 40, color: color)),
         );
       }
 
-  }
-
-  void resetTire(String descTire) {
-    setState(() {
-      descTireGlobal = descTire;
-    });
   }
 
   _floatingActionButton() {
