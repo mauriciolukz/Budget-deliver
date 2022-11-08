@@ -1,10 +1,8 @@
 import 'dart:async';
 
 import 'package:budgetdeliver/view/car_parts.dart';
-import 'package:flip_card/flip_card_controller.dart';
 import 'package:flutter/material.dart';
 import '../utils/global.color.dart';
-import 'package:flip_card/flip_card.dart';
 import '../widgets/wheels.dart';
 
 class TireCheck extends StatefulWidget {
